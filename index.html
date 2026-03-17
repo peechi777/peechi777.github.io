@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUNG-CHI, TSAI | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold tracking-tight">HUNG-CHI, TSAI</h1>
+            <nav class="space-x-6 text-sm font-medium">
+                <a href="#about" class="hover:text-blue-600">關於我</a>
+                <a href="#projects" class="hover:text-blue-600">作品集</a>
+                <a href="mailto:zoe89418@gmail.com" class="hover:text-blue-600">聯絡方式</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-12">
+        
+        <section id="about" class="mb-20">
+            <div class="flex flex-col md:flex-row items-center gap-10">
+                <div class="flex-1">
+                    <h2 class="text-4xl font-extrabold mb-4">你好，我是 蔡泓其</h2>
+                    <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                        一名專注於 **AI 演算法開發**與**後端系統架構**的資工碩士。擅長使用 Python 進行大規模數據模擬，並具備 Full-stack 開發經驗。目前正致力於 Cloud AI 解決方案。
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/Hung7" class="bg-black text-white px-5 py-2 rounded-full text-sm flex items-center">
+                            <i class="fab fa-github mr-2"></i> GitHub
+                        </a>
+                        <a href="mailto:zoe89418@gmail.com" class="border border-gray-300 px-5 py-2 rounded-full text-sm flex items-center hover:bg-gray-100">
+                            <i class="fas fa-envelope mr-2"></i> Email
+                        </a>
+                    </div>
+                </div>
+                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-inner">
+                    <div class="flex items-center justify-center h-full text-gray-400">個人照</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h3 class="text-2xl font-bold mb-8 flex items-center">
+                <span class="w-8 h-1 bg-blue-600 mr-3"></span> 精選作品
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center">
+                        <span class="text-gray-400">Slot Engine Stats Chart</span>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-lg mb-2">Slot Machine Simulation Engine</h4>
+                        <p class="text-sm text-gray-600 mb-4">使用蒙地卡羅模擬（Monte Carlo）驗證老虎機 RTP 與 Combo 消除邏輯，處理百萬次運算僅需數秒。</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Python</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Pandas</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Statistics</span>
+                        </div>
+                        <a href="https://github.com/Hung7" class="text-blue-600 text-sm font-semibold hover:underline">查看專案 →</a>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
+                    <div class="h-48 bg-gray-100 flex items-center justify-center">
+                        <span class="text-gray-400">Face Recognition Demo</span>
+                    </div>
+                    <div class="p-6">
+                        <h4 class="font-bold text-lg mb-2">Smart Attendance System</h4>
+                        <p class="text-sm text-gray-600 mb-4">基於深度學習的人臉辨識打卡系統，支援即時偵測與自動化出勤日誌紀錄。</p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">OpenCV</span>
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">YOLOv4</span>
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">AI</span>
+                        </div>
+                        <a href="https://github.com/Hung7" class="text-blue-600 text-sm font-semibold hover:underline">查看專案 →</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-10 text-gray-400 text-sm border-t mt-20">
+        © 2026 HUNG-CHI, TSAI. Built with Tailwind CSS.
+    </footer>
+
+</body>
+</html>
