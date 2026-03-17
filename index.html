@@ -11,7 +11,7 @@
 
     <header class="bg-white border-b sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-tight">HUNG-CHI, TSAI</h1>
+            <h1 class="text-xl font-bold tracking-tight">HUNG-CHI, TSAI (蔡泓其)</h1>
             <nav class="space-x-6 text-sm font-medium">
                 <a href="#about" class="hover:text-blue-600">關於我</a>
                 <a href="#projects" class="hover:text-blue-600">作品集</a>
@@ -27,7 +27,7 @@
                 <div class="flex-1">
                     <h2 class="text-4xl font-extrabold mb-4">你好，我是 蔡泓其</h2>
                     <div class="flex space-x-4">
-                        <a href="https://github.com/peechi777?tab=repositories" class="bg-black text-white px-5 py-2 rounded-full text-sm flex items-center">
+                        <a href="https://github.com/peechi777" target="_blank" class="bg-black text-white px-5 py-2 rounded-full text-sm flex items-center">
                             <i class="fab fa-github mr-2"></i> GitHub
                         </a>
                         <a href="mailto:zoe89418@gmail.com" class="border border-gray-300 px-5 py-2 rounded-full text-sm flex items-center hover:bg-gray-100">
@@ -35,8 +35,8 @@
                         </a>
                     </div>
                 </div>
-                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-inner">
-                    <div class="flex items-center justify-center h-full text-gray-400">個人照</div>
+                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-inner flex items-center justify-center">
+                    <span class="text-gray-400">個人照</span>
                 </div>
             </div>
         </section>
@@ -48,35 +48,41 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
-                    <div class="h-48 bg-gray-100 flex items-center justify-center">
-                        <span class="text-gray-400">Slot Engine Stats Chart</span>
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
+                    <div class="h-48 bg-blue-600 flex items-center justify-center text-white text-3xl">
+                        <i class="fas fa-university"></i>
                     </div>
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Slot Machine Simulation Engine</h4>
-                        <p class="text-sm text-gray-600 mb-4">使用蒙地卡羅模擬（Monte Carlo）驗證老虎機 RTP 與 Combo 消除邏輯，處理百萬次運算僅需數秒。</p>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h4 class="font-bold text-lg mb-2">銀行個人化喜好商品系統</h4>
+                        <p class="text-sm text-gray-600 mb-4 flex-1">
+                            基於 Spring Boot 3 與 Vue 3 的前後端分離系統。採用 <strong>Docker Multi-stage Build</strong>，大幅優化部署流程，實現「零環境配置」即可一鍵編譯並啟動全服務。
+                        </p>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Python</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Pandas</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Statistics</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Spring Boot</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Vue 3</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">Docker</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">MySQL</span>
                         </div>
-                        <a href="https://github.com/Hung7" class="text-blue-600 text-sm font-semibold hover:underline">查看專案 →</a>
+                        <a href="https://github.com/peechi777/bank-system" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto">查看專案 →</a>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition">
-                    <div class="h-48 bg-gray-100 flex items-center justify-center">
-                        <span class="text-gray-400">Face Recognition Demo</span>
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
+                    <div class="h-48 bg-emerald-600 flex items-center justify-center text-white text-3xl">
+                        <i class="fas fa-eye"></i>
                     </div>
-                    <div class="p-6">
-                        <h4 class="font-bold text-lg mb-2">Smart Attendance System</h4>
-                        <p class="text-sm text-gray-600 mb-4">基於深度學習的人臉辨識打卡系統，支援即時偵測與自動化出勤日誌紀錄。</p>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h4 class="font-bold text-lg mb-2">智慧交通輔助系統</h4>
+                        <p class="text-sm text-gray-600 mb-4 flex-1">
+                            結合 <strong>YOLOv4</strong> 與 NVIDIA Jetson 硬體，為視覺障礙者開發即時交通警示系統。曾在國際會議 APWCS 發表相關研究，專注於邊緣運算效能優化。
+                        </p>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">OpenCV</span>
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">Computer Vision</span>
                             <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">YOLOv4</span>
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">AI</span>
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">Python</span>
+                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">Edge AI</span>
                         </div>
-                        <a href="https://github.com/Hung7" class="text-blue-600 text-sm font-semibold hover:underline">查看專案 →</a>
+                        <a href="https://github.com/peechi777" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto">查看專案 →</a>
                     </div>
                 </div>
 
