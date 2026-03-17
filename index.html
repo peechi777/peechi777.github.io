@@ -25,21 +25,27 @@
         <section id="about" class="mb-20">
             <div class="flex flex-col md:flex-row items-center gap-10">
                 <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-4xl font-extrabold mb-4">你好，我是 蔡泓其</h2>
-                    <p class="text-gray-600 mb-6 leading-relaxed text-lg">
-                        擁有電腦科學碩士背景，專注於 <strong>Full-stack 開發</strong> 與 <strong>Cloud AI 架構</strong>。
-                        擅長利用 Docker 實作自動化開發環境，並具備大型語言模型 (LLM) 部署與智慧系統開發經驗。
-                    </p>
-                    <div class="flex justify-center md:justify-start space-x-4">
-                        <a href="https://github.com/peechi777" target="_blank" class="bg-black text-white px-5 py-2 rounded-full text-sm flex items-center hover:opacity-80 transition shadow-sm">
+                    <h2 class="text-5xl font-extrabold mb-8">你好，我是 蔡泓其</h2>
+                    
+                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
+                        <a href="https://github.com/peechi777" target="_blank" class="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:opacity-80 transition shadow-sm">
                             <i class="fab fa-github mr-2"></i> GitHub
                         </a>
-                        <a href="mailto:zoe89418@gmail.com" class="border border-gray-300 px-5 py-2 rounded-full text-sm flex items-center hover:bg-gray-100 transition shadow-sm">
+                        
+                        <a href="mailto:zoe89418@gmail.com" class="border border-gray-300 px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-gray-100 transition shadow-sm bg-white">
                             <i class="fas fa-envelope mr-2"></i> Email
+                        </a>
+
+                        <a href="resume-zh.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
+                            <i class="fas fa-file-pdf mr-2"></i> 履歷 (中)
+                        </a>
+
+                        <a href="resume-en.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
+                            <i class="fas fa-file-pdf mr-2"></i> Resume (EN)
                         </a>
                     </div>
                 </div>
-                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-md flex items-center justify-center border-4 border-white">
+                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-md flex items-center justify-center border-4 border-white shrink-0">
                     <img src="photo.jpg" alt="蔡泓其 個人照" class="w-full h-full object-cover">
                 </div>
             </div>
@@ -62,15 +68,13 @@
                             <p>針對金融產品展示需求，開發具備高可維護性的 <strong>Full-stack</strong> 應用。</p>
                             <ul class="list-disc ml-4 space-y-1">
                                 <li><strong>DevOps 實踐</strong>：利用 <strong>Docker Multi-stage Build</strong> 封裝編譯環境，達成開發環境高度一致性。</li>
-                                <li><strong>一鍵自動化</strong>：撰寫 PowerShell 腳本整合容器生命週期管理，解決資料庫初始化等待等部署細節。</li>
-                                <li><strong>前後端整合</strong>：實作 RESTful API，確保資料在 Spring Boot 與 Vue 3 之間的高效交換。</li>
+                                <li><strong>一鍵自動化</strong>：撰寫 PowerShell 腳本整合容器生命週期管理，解決跨平台部署與初始化等待問題。</li>
                             </ul>
                         </div>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100 font-medium">Spring Boot 3</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100 font-medium">Vue 3</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100 font-medium">Docker</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100 font-medium">Multi-stage</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Spring Boot 3</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Vue 3</span>
+                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Docker</span>
                         </div>
                         <a href="https://github.com/peechi777/bank-system" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
                             查看技術細節 <i class="fas fa-arrow-right ml-1"></i>
@@ -79,23 +83,25 @@
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
-                    <div class="h-48 bg-emerald-600 flex items-center justify-center text-white text-4xl">
-                        <i class="fas fa-car-side"></i>
+                    <div class="h-48 bg-slate-700 flex items-center justify-center text-white text-4xl">
+                        <i class="fas fa-parking"></i>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg mb-2 text-emerald-700">智慧交通輔助系統</h4>
-                        <p class="text-sm text-gray-600 mb-6 flex-1 leading-relaxed">
-                            結合 <strong>YOLOv4</strong> 與 NVIDIA Jetson 硬體，為視覺障礙者開發即時交通警示系統。曾在國際會議 APWCS 發表相關研究，專注於邊緣運算效能優化與 Federated Learning 應用。
-                        </p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded border border-green-100 font-medium">Computer Vision</span>
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded border border-green-100 font-medium">YOLOv4</span>
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded border border-green-100 font-medium">Python</span>
-                            <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded border border-green-100 font-medium">Edge AI</span>
+                        <h4 class="font-bold text-lg mb-2 text-slate-800">隱私保護停車推薦系統 (碩士研究)</h4>
+                        <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
+                            <p>針對智慧城市需求，開發基於 <strong>聯絡學習 (Federated Learning)</strong> 的停車預測系統，並於 APWCS 2024 發表。</p>
+                            <ul class="list-disc ml-4 space-y-1">
+                                <li><strong>隱私計算</strong>：實作分散式模型訓練，確保原始交通數據不離開客戶端即可完成模型更新。</li>
+                                <li><strong>序列預測</strong>：整合 <strong>RNN-LSTM</strong> 模型處理時間序列資料，精準預測停車場剩餘車位趨勢。</li>
+                            </ul>
                         </div>
-                        <a href="https://github.com/peechi777" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
-                            查看專案 <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Federated Learning</span>
+                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">LSTM</span>
+                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Python</span>
+                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">PyTorch</span>
+                        </div>
+                        <span class="text-gray-400 text-sm font-semibold mt-auto italic text-right">成果發表於 APWCS 2024</span>
                     </div>
                 </div>
 
