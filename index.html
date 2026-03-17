@@ -36,11 +36,11 @@
                             <i class="fas fa-envelope mr-2"></i> Email
                         </a>
 
-                        <a href="resume-zh.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="履歷.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
                             <i class="fas fa-file-pdf mr-2"></i> 履歷 (中)
                         </a>
 
-                        <a href="resume-en.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
+                        <a href="Resume.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
                             <i class="fas fa-file-pdf mr-2"></i> Resume (EN)
                         </a>
                     </div>
@@ -60,15 +60,18 @@
                 
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
                     <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden border-b">
-                        <img src="bank.jpg" alt="銀行喜好商品系統截圖" class="w-full h-full object-cover object-top">
+                        <img src="bank.png" alt="銀行喜好商品系統截圖" class="w-full h-full object-cover object-top">
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
                         <h4 class="font-bold text-lg mb-2 text-blue-700">銀行個人化喜好商品系統</h4>
                         <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>針對金融產品展示需求，開發具備高可維護性的 <strong>Full-stack</strong> 應用。</p>
-                            <ul class="list-disc ml-4 space-y-1">
-                                <li><strong>DevOps 實踐</strong>：利用 <strong>Docker Multi-stage Build</strong> 封裝編譯環境，達成開發環境高度一致性。</li>
-                                <li><strong>一鍵自動化</strong>：撰寫 PowerShell 腳本整合容器生命週期管理，解決跨平台部署與初始化等待問題。</li>
+                            <p>針本專案採用標準 <strong>3-Tier 架構</strong> (Vue.js / Spring Boot / MySQL)，實作完整的產品 CRUD 功能。
+                                除了管理產品價格、手續費與扣款帳戶外，核心技術亮點在於模擬真實金融開發環境：</p>
+                            <ul class="list-disc ml-4 space-y-2">
+                                <li><strong>嚴謹架構設計</strong>：後端嚴格遵循 <strong>展示層、業務層、資料層、共用層</strong> 之分層架構，並透過 <strong>Stored Procedure</strong> 進行資料庫存取以提升效能與安全性。</li>
+                                <li><strong>交易一致性</strong>：針對跨資料表異動實作 <strong>Transaction 管理</strong>，確保在高併發環境下金融資料的正確性與完整性。</li>
+                                <li><strong>資安防護實踐</strong>：系統具備防禦 <strong>SQL Injection</strong> 與 <strong>XSS 攻擊</strong> 的機制，符合金融資訊安全開發規範。</li>
+                                <li><strong>DevOps 自動化</strong>：整合 Docker Multi-stage 與 PowerShell 腳本，提供資料庫 DDL/DML 自動初始化功能。</li>
                             </ul>
                         </div>
                         <div class="flex flex-wrap gap-2 mb-4">
@@ -87,12 +90,14 @@
                         <i class="fas fa-parking"></i>
                     </div>
                     <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg mb-2 text-slate-800">隱私保護停車推薦系統 (碩士研究)</h4>
+                        <h4 class="font-bold text-lg mb-2 text-slate-800">基於聯邦學習的具位置隱私保護之停車推薦 (論文)</h4>
                         <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>針對智慧城市需求，開發基於 <strong>聯絡學習 (Federated Learning)</strong> 的停車預測系統，並於 APWCS 2024 發表。</p>
-                            <ul class="list-disc ml-4 space-y-1">
-                                <li><strong>隱私計算</strong>：實作分散式模型訓練，確保原始交通數據不離開客戶端即可完成模型更新。</li>
-                                <li><strong>序列預測</strong>：整合 <strong>RNN-LSTM</strong> 模型處理時間序列資料，精準預測停車場剩餘車位趨勢。</li>
+                            <p>本研究開發一套能在不洩漏使用者原始數據的前提下，實現高效率停車位預測的智慧系統，主要技術貢獻如下：</p>
+                            <ul class="list-disc ml-4 space-y-2">
+                                <li><strong>分散式聯邦學習 (FL)</strong>：透過設備端本地訓練模型，僅上傳模型權重而非原始路徑數據，從根源降低數據洩漏風險並節省傳輸頻寬。</li>
+                                <li><strong>時間距離模糊化</strong>：針對位置隱私進行動態調整模糊化處理，在維持推薦精準度的同時，確保使用者行蹤安全。</li>
+                                <li><strong>RNN-LSTM 序列預測</strong>：利用 LSTM 記憶門控機制處理停車場歷史與即時數據，捕捉長期時間依賴關係，達成高精確度的空位率預測。</li>
+                                <li><strong>5G C-V2X 整合</strong>：模擬車聯網通訊技術，支援 RSU 與車輛間的即時數據交換，提供系統所需的實時支持。</li>
                             </ul>
                         </div>
                         <div class="flex flex-wrap gap-2 mb-4">
@@ -101,6 +106,9 @@
                             <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Python</span>
                             <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">PyTorch</span>
                         </div>
+                        <a href="https://github.com/peechi777/Location-Privacy-Preserving-Parking-Recommendation-Based-on-Federated-Learning" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
+                            查看技術細節 <i class="fas fa-arrow-right ml-1"></i>
+                        </a>
                         <span class="text-gray-400 text-sm font-semibold mt-auto italic text-right">成果發表於 APWCS 2024</span>
                     </div>
                 </div>
