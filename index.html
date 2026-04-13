@@ -53,7 +53,7 @@
 
         <section id="projects">
             <h3 class="text-2xl font-bold mb-8 flex items-center">
-                <span class="w-8 h-1 bg-blue-600 mr-3"></span> 精選作品
+                <span class="w-8 h-1 bg-blue-600 mr-3"></span> 精選作品 [點擊查看詳細]
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -85,11 +85,14 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
-                    <div class="h-48 bg-slate-700 flex items-center justify-center text-white text-4xl">
+                <a href="bank-project-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
+    
+                    <div class="h-48 bg-slate-700 flex items-center justify-center text-white text-4xl relative overflow-hidden">
                         <i class="fas fa-parking"></i>
-                        <img src="FL.png" alt="系統架構圖" class="w-full h-full object-cover object-top">
+                        <img src="FL.png" alt="系統架構圖" class="w-full h-full object-cover object-top absolute inset-0">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
                     </div>
+
                     <div class="p-6 flex-1 flex flex-col">
                         <h4 class="font-bold text-lg mb-2 text-slate-800">基於聯邦學習的具位置隱私保護之停車推薦 (論文)</h4>
                         <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
@@ -107,12 +110,16 @@
                             <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Python</span>
                             <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">PyTorch</span>
                         </div>
-                        <a href="https://github.com/peechi777/Location-Privacy-Preserving-Parking-Recommendation-Based-on-Federated-Learning" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
-                            查看技術細節 <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                        <span class="text-gray-400 text-sm font-semibold mt-auto italic text-right">成果發表於 APWCS 2024</span>
+
+
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-blue-600 text-sm font-semibold inline-flex items-center">
+                                 <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
+                            </span>
+                            <span class="text-gray-400 text-sm font-semibold italic">成果發表於 APWCS 2024</span>
+                        </div>
                     </div>
-                </div>
+                </a>
 
 
                     
