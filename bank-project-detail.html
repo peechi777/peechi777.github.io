@@ -3,226 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品集 | 具隱私保護之聯邦學習停車推薦系統</title>
+    <title>作品集 | 全端容器化銀行金融商品管理系統</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .icon-box { display: flex; align-items: center; justify-content: center; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <header class="bg-slate-900 text-white py-16 px-6 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">基於聯邦學習之具位置隱私保護停車推薦系統</h1>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">全端容器化銀行金融商品管理系統</h1>
         <p class="text-xl text-slate-300 max-w-3xl mx-auto">
-            整合 <strong>Federated Learning</strong> 與 <strong>Differential Privacy</strong>，在不共享原始數據的前提下，建構高精確度之 LSTM 預測模型。
+            基於 <strong>Spring Boot 3</strong> 與 <strong>Vue 3</strong> 的前後端分離架構，結合 <strong>MySQL 預儲程序</strong> 與 <strong>Docker Compose</strong>，實現一鍵自動化部署與金融級資料安全操作。
         </p>
         <div class="mt-8 flex justify-center gap-4 flex-wrap">
-            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">PyTorch</span>
-            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">LSTM</span>
-            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">Differential Privacy</span>
-            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">Federated Learning</span>
-            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">Location Privacy</span>
+            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">Java 17 / Spring Boot 3</span>
+            <span class="bg-emerald-600 px-3 py-1 rounded-full text-sm">Vue 3 / Vite</span>
+            <span class="bg-blue-600 px-3 py-1 rounded-full text-sm">MySQL 8.0</span>
+            <span class="bg-cyan-600 px-3 py-1 rounded-full text-sm">Docker Compose</span>
+            <span class="bg-purple-600 px-3 py-1 rounded-full text-sm">RESTful API</span>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto py-12 px-6">
         
+        <!-- 痛點區塊 -->
         <section class="mb-16">
-            <h2 class="text-2xl font-bold border-b-2 border-blue-500 pb-2 mb-6"><i class="fas fa-exclamation-triangle mr-2"></i>痛點</h2>
+            <h2 class="text-2xl font-bold border-b-2 border-blue-500 pb-2 mb-6"><i class="fas fa-exclamation-triangle mr-2"></i>開發與架構痛點</h2>
             <div class="grid md:grid-cols-2 gap-8">
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
-                    <h3 class="font-bold text-lg mb-2">使用者隱私外洩風險</h3>
-                    <p class="text-gray-600">傳統的停車系統需要上傳精確目的地GPS，存在隱私外洩風險</p>
+                    <h3 class="font-bold text-lg mb-2">金融計算精度與資安風險</h3>
+                    <p class="text-gray-600">若在前端或中介層計算金融手續費與總額，容易受到竄改且存在精度丟失問題。分散的查詢邏輯亦容易引發 SQL Injection 風險。</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
-                    <h3 class="font-bold text-lg mb-2">數據孤島與模型泛化</h3>
-                    <p class="text-gray-600">不同區域的停車場數據分散在各自的本地端。若採用傳統中央集權式訓練，需搬運大量數據；若各停車場分開訓練，則會因數據量不足導致模型精準度低下且無法應對突發狀況。</p>
+                    <h3 class="font-bold text-lg mb-2">環境部署繁瑣與運維困難</h3>
+                    <p class="text-gray-600">傳統 Web、API 與資料庫需要各自獨立安裝與設定環境，這導致「在我的電腦可以跑，在別人的不行」的問題，極大降低開發交付效率。</p>
                 </div>
             </div>
         </section>
 
-<section class="mb-16">
-    <h2 class="text-2xl font-bold border-b-2 border-blue-500 pb-2 mb-6"><i class="fas fa-layer-group mr-2"></i>技術架構與實作</h2>
-    <div class="space-y-12">
+        <!-- 技術架構與實作區塊 -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-bold border-b-2 border-blue-500 pb-2 mb-6"><i class="fas fa-layer-group mr-2"></i>技術架構與核心實作</h2>
+            <div class="space-y-12">
+                
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">1. 嚴謹的 RESTful API 與 Controller 職責分離</h3>
+                        <p class="mb-4">
+                            後端採用 <strong>MVC 分層架構</strong>，確保代碼高內聚低耦合。API 遵循 RESTful 精神，利用 HTTP Method 區分操作行為。
+                        </p>
+                        <ul class="list-disc list-inside text-sm text-gray-600 italic space-y-1">
+                            <li>將邏輯清晰拆分為：商品展示 (<code>BankProductController</code>)、用戶查詢 (<code>UserController</code>) 與 喜好清單操作 (<code>LikeListController</code>)。</li>
+                            <li>支援以 PathVariable 與 RequestParam 精確進行 GET/POST/PUT/DELETE 資源操作。</li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-48 h-48 flex-shrink-0 rounded-lg shadow-sm bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-400">
+                        <i class="fas fa-server text-6xl"></i>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">2. 核心計算下移：MySQL 預儲程序 (Stored Procedure)</h3>
+                        <p class="mb-4">
+                            解決金融計算精準度問題，實作 <strong>「資料庫處理核心邏輯」</strong>。透過 Spring Data JPA 的 <code>@Procedure</code> 直接對接資料庫底層。
+                        </p>
+                        <ul class="list-disc list-inside text-sm text-gray-600 italic space-y-1">
+                            <li>申購總手續費與總金額由資料庫內的 SP 動態計算後直接落表，確保資料高一致性。</li>
+                            <li>透過 JdbcTemplate 執行參數化查詢，從根源阻斷 SQL 隱碼攻擊。</li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-48 h-48 flex-shrink-0 rounded-lg shadow-sm bg-yellow-50 border border-yellow-100 flex items-center justify-center text-yellow-500">
+                        <i class="fas fa-database text-6xl"></i>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">3. Vue 3 Composition API 與極速前端渲染</h3>
+                        <p class="mb-4">
+                            放棄繁重的舊版框架，擁抱 Vite + Vue 3 的輕量體系，打造即時、高互動的用戶介面。
+                        </p>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li>
+                                <strong>高自定義元件：</strong>將商品列表、清單渲染封裝於 <code>ProductList.vue</code>，自動移除未使用的冗餘樣板代碼。
+                            </li>
+                            <li>
+                                <strong>Axios 異步整合：</strong>採用 Async/Await 語法平滑串接後段微服務，並優雅處理前端跨域請求 (CORS)。
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-48 h-48 flex-shrink-0 rounded-lg shadow-sm bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-500">
+                        <i class="fab fa-vuejs text-6xl"></i>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">4. Docker Compose 全容器化的一鍵部署</h3>
+                        <p class="mb-4">
+                            建立跨平台的穩定生態圈！以 PowerShell 腳本包裝編排機制，徹底抹平環境差異。
+                        </p>
+                        <ul class="list-disc list-inside text-sm text-gray-600 italic space-y-1">
+                            <li>自動化資料庫初始化：透過掛載 DDL 與 DML 腳本至 <code>docker-entrypoint-initdb.d</code> 達成啟動即建表塞資料。</li>
+                            <li>服務相依管理：使用 <code>depends_on</code> 精準控制啟動順序，確保 API Server 銜接 DB 完成。</li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-48 h-48 flex-shrink-0 rounded-lg shadow-sm bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-500">
+                        <i class="fab fa-docker text-6xl"></i>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- 特色指標與工程實踐區塊 -->
+        <section class="mb-16 bg-slate-50 p-8 rounded-xl border border-gray-200">
+            <h2 class="text-2xl font-bold mb-6 text-center text-slate-800">關鍵工程實踐與系統優勢</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-emerald-600 text-2xl font-bold mb-2">@Transactional</div>
+                    <div class="text-sm text-gray-500 font-bold tracking-wider">事務管理與 ACID</div>
+                    <p class="mt-3 text-sm text-gray-600 leading-relaxed">
+                        在 Service 層的資料變更行為強制導入事務管理。面對複雜操作時，若中途發生 Exception，系統能保證資料 Rollback，絕不出現髒資料。
+                    </p>
+                </div>
         
-        <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="flex-1">
-                <h3 class="text-xl font-bold text-blue-700 mb-2">1. LSTM 模型</h3>
-                <p class="mb-4">
-                    利用 <strong>LSTM 深度學習模型</strong> 記住停車場的過往停車資料。系統會抓取過去的空位數據，預測下一個時段的車位狀況，解決找車位困難的痛點。
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-blue-600 text-2xl font-bold mb-2">Zero Config</div>
+                    <div class="text-sm text-gray-500 font-bold tracking-wider">開箱即用的開發體驗</div>
+                    <p class="mt-3 text-sm text-gray-600 leading-relaxed">
+                        整合 Maven Wrapper，讓後續開發者或測試人員，即便電腦未安裝任何 Java 開發包與資料庫套件，也能透過一句指令完成編譯與部署。
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-indigo-600 text-2xl font-bold mb-2">Decoupling</div>
+                    <div class="text-sm text-gray-500 font-bold tracking-wider">前後端完全解耦</div>
+                    <p class="mt-3 text-sm text-gray-600 leading-relaxed">
+                        突破傳統 JSP/Thymeleaf 綁定限制，實作純 JSON 資料流交互。未來若需擴充 iOS 或 Android APP 端，後端 API 可 100% 無痛共用。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 總結與貢獻 -->
+        <section class="mb-16 bg-white border-2 border-slate-100 p-8 rounded-2xl shadow-sm">
+            <h2 class="text-2xl font-bold mb-6 text-slate-800 flex items-center">
+                <i class="fas fa-flag-checkered mr-3 text-slate-600"></i> 開發總結與職涯亮點
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-gray-800 border-l-4 border-slate-700 pl-3">
+                        企業級軟體架構實踐
+                    </h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">
+                        本專案展示了完整的 <strong>Web Server / App Server / RDBMS</strong> 三層次獨立分發能力。此系統依循業界規範、模組化開發 API 的功能。
+                    </p>
+                </div>
+        
+            </div>
+        
+            <div class="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-3">
+                <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">#SpringBoot3</span>
+                <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">#Vue3</span>
+                <span class="bg-cyan-100 text-cyan-700 px-3 py-1 rounded-full text-xs font-semibold">#DockerCompose</span>
+                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">#MySQLStoredProcedure</span>
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">#CleanArchitecture</span>
+            </div>
+        </section>
+
+        <!-- GitHub 連結與 Footer -->
+        <section class="mb-16 text-center">
+            <div class="bg-slate-900 text-white p-10 rounded-2xl shadow-xl">
+                <h2 class="text-2xl font-bold mb-4">專案原始碼與詳細文件</h2>
+                <p class="text-slate-400 mb-8 max-w-2xl mx-auto">
+                    此專案的所有程式碼、資料庫初始化腳本以及 API 測試檔 (test.http) 皆已完整開源於 GitHub，歡迎前往參閱。
                 </p>
-                <ul class="list-disc list-inside text-sm text-gray-600 italic">
-                    <li>將原始數據轉換為「空餘率」，提升模型泛化能力</li>
-                    <li>使用滑動視窗技術，捕捉早晚尖峰、節慶的週期性特徵</li>
-                </ul>
-            </div> <div class="w-full md:w-72 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-2">
-                <img src="LSTM_model.PNG" alt="LSTM 預測示意圖" class="w-full h-auto object-contain">
+                <a href="http://localhost:5173/" 
+                   target="_blank" 
+                   class="inline-flex items-center bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <i class="fab fa-github mr-2 text-xl"></i>
+                    查看 Vite 前端展示頁面
+                </a>
+                <a href="https://github.com/peechi777/bank-system" 
+                   target="_blank" 
+                   class="inline-flex items-center bg-white text-slate-900 px-8 py-3 rounded-full font-bold hover:bg-slate-200 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    <i class="fab fa-github mr-2 text-xl"></i>
+                    查看 GitHub 完整專案
+                </a>
+                
+                <div class="mt-8 flex justify-center gap-6 text-xs text-slate-400">
+                    <span><i class="fab fa-java mr-1"></i> Java / Spring</span>
+                    <span><i class="fab fa-vuejs mr-1"></i> Vue / Vite</span>
+                    <span><i class="fas fa-database mr-1"></i> MySQL DB</span>
+                </div>
             </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div class="flex-1">
-                <h3 class="text-xl font-bold text-blue-700 mb-2">2. 隱私數據聚合 (Federated Learning)</h3>
-                <p class="mb-4">
-                    實作 <strong>「數據不動，模型動」</strong> 的聯邦學習架構。停車場在本地端訓練 AI，只將訓練好的模型參數傳回雲端進行聚合，從源頭避免敏感原始數據外洩。
-                </p>
-                <ul class="list-disc list-inside text-sm text-gray-600 italic">
-                    <li>手寫權重聚合機制：擺脫大型框架依賴，實現更靈活、高效率的模型更新傳輸。</li>
-                    <li>解決數據分佈不均 (Non-IID) 的異質性問題</li>
-                </ul>
-            </div>
-            <div class="w-full md:w-72 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-2">
-                <img src="2.FL.png" alt="Federated Learning 示意圖" class="w-full h-auto object-contain">
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row items-center gap-8">
-            <div class="flex-1">
-                <h3 class="text-xl font-bold text-blue-700 mb-2">3. 雙重隱私防禦機制 (Location & DP)</h3>
-                <p class="mb-4">
-                    本專案實作了從「使用者端」到「模型端」的全方位保護：
-                </p>
-                <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
-                    <li>
-                        <strong>第一層：位置模糊</strong><br>
-                        透過時間距離模擬法，將使用者的精確座標模糊化為一個區域，確保伺服器端僅能獲得大致方位。
-                    </li>
-                    <li>
-                        <strong>第二層：高斯差分隱私 (Differential Privacy)</strong><br>
-                        模型參數上傳前注入隨機高斯雜訊。即使被竊取了參數，也無法透過數學反推回原始位置。
-                    </li>
-                </ul>
-            </div>
-            <div class="w-full md:w-72 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-2">
-                <img src="location.png" alt="Privacy Mechanisms 示意圖" class="w-full h-auto object-contain">
-            </div>
-        </div>
-
-        <div class="flex flex-col md:flex-row-reverse items-center gap-8">
-            <div class="flex-1">
-                <h3 class="text-xl font-bold text-blue-700 mb-2">4. 隱私安全性驗證 (推斷攻擊模擬)</h3>
-                <p class="mb-4">
-                    為了量化防禦效果，本專案實作了<strong>推斷攻擊模擬</strong>。透過計算「使用者真實區域」與「攻擊者推測區域」的<strong>重疊率</strong>，驗證隱私保護的有效性。
-                </p>
-                <ul class="list-disc list-inside text-sm text-gray-600 italic">
-                    <li>實驗證實：在加入模糊化與高斯雜訊後，能有效降低攻擊者的推斷成功率</li>
-                </ul>
-            </div>
-            <div class="w-full md:w-72 flex-shrink-0 rounded-lg overflow-hidden border border-gray-200 shadow-sm bg-white p-2">
-                <img src="3.png" alt="Inference Attack Simulation 示意圖" class="w-full h-auto object-contain">
-            </div>
-        </div>
-        
-    </div>
-</section>
-
-<section class="mb-16 bg-blue-50 p-8 rounded-xl">
-    <h2 class="text-2xl font-bold mb-6 text-center text-blue-900">安全性量化分析與實驗成果</h2>
-<div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-    <div class="text-blue-600 text-3xl font-bold mb-2">RMSE / R²</div>
-    <div class="text-sm text-gray-500 font-bold uppercase tracking-wider">預測效能指標</div>
-    <p class="mt-3 text-sm text-gray-600 leading-relaxed">
-        使用 <strong>RMSE</strong> 確保誤差單位與實際空餘率一致，並透過 <strong>R² Score</strong> 證實模型對交通趨勢具備解釋力。
-    </p>
-
-    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
-        <div class="rounded border border-gray-100 overflow-hidden bg-gray-50 p-1">
-            <img src="rmse.jpg" alt="RMSE 比較圖" class="w-full h-auto object-contain">
-            <p class="text-[9px] text-gray-400 mt-1 italic">RMSE 比較</p>
-        </div>
-        
-        <div class="rounded border border-gray-100 overflow-hidden bg-gray-50 p-1">
-            <img src="r2.jpg" alt="R2 比較圖" class="w-full h-auto object-contain">
-            <p class="text-[9px] text-gray-400 mt-1 italic">R²比較</p>
-        </div>
-    </div>
-    <p class="text-[10px] text-gray-400 mt-2 text-center italic leading-tight">
-        ARIMA、SVR、FED_AVG 以及 FED_WEI 之效能指標比較
-    </p>
-</div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <div class="text-blue-600 text-3xl font-bold mb-2">IoU Overlap</div>
-            <div class="text-sm text-gray-500 font-bold uppercase tracking-wider">推斷攻擊抗性</div>
-            <p class="mt-3 text-sm text-gray-600 leading-relaxed">
-                經 10,000 次蒙地卡羅模擬測試，證實<strong>位置模糊化</strong>能有效降低空間重疊率，大幅提升攻擊者的推斷門檻。
-            </p>
-
-            <div class="mt-4 rounded border border-gray-100 overflow-hidden bg-gray-50 p-2">
-            <img src="overlap.png" alt="IoU 模擬結果圖" class="w-full h-auto">
-            <p class="text-[10px] text-gray-400 mt-1 text-center italic">不同半徑範圍之重疊率</p>
-    </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-            <div class="text-blue-600 text-3xl font-bold mb-2">Non-IID Handling</div>
-            <div class="text-sm text-gray-500 font-bold uppercase tracking-wider">異質數據魯棒性</div>
-            <p class="mt-3 text-sm text-gray-600 leading-relaxed">
-                採用 <strong>FedWeighted</strong> 演算法，針對不同規模停車場進行權重補償，確保跨場域的模型泛化能力與穩定性。
-            </p>
-        </div>
-    </div>
-</section>
-
-<section class="mb-16 bg-white border-2 border-blue-100 p-8 rounded-2xl shadow-sm">
-    <h2 class="text-2xl font-bold mb-6 text-blue-900 flex items-center">
-        <i class="fas fa-flag-checkered mr-3 text-blue-600"></i> 研究總結與核心貢獻
-    </h2>
-    
-    <div class="grid md:grid-cols-2 gap-8">
-        <div class="space-y-4">
-            <h3 class="text-lg font-bold text-gray-800 border-l-4 border-blue-500 pl-3">
-                多層次隱私安全架構
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-                本研究成功整合 <strong>聯邦學習 (FL)</strong> 與 <strong>差分隱私 (DP)</strong>，實現「數據不動、模型動」的合作訓練模式。
-                特別創新之處在於以<strong>「時間距離」取代「精確目的地座標」</strong>，在不犧牲推薦品質的前提下，從源頭徹底保護使用者的地理位置隱私。
-            </p>
-        </div>
-
-        <div class="space-y-4">
-            <h3 class="text-lg font-bold text-gray-800 border-l-4 border-blue-500 pl-3">
-                高精準度個人化推薦
-            </h3>
-            <p class="text-gray-600 text-sm leading-relaxed">
-                透過 <strong>LSTM 深度學習模型</strong> 擷取停車場空位與使用者行為的長期依賴性。系統不僅能預測未來空位，更能針對使用者對<strong>距離的在意度</strong>建立模型，提供個人化的建議，有效解決找車位之問題。
-            </p>
-        </div>
-    </div>
-
-    <div class="mt-8 pt-6 border-t border-gray-100 flex flex-wrap gap-3">
-        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">#FederatedLearning</span>
-        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">#DifferentialPrivacy</span>
-        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">#LSTM</span>
-        <span class="bg-orange-100 text-orange-700 px-3 py-1 rounded-full text-xs font-semibold">#LocationObfuscation</span>
-        <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold">#Personalization</span>
-    </div>
-</section>
-
-<section class="mb-16 text-center">
-    <div class="bg-gray-900 text-white p-10 rounded-2xl shadow-xl">
-        <h2 class="text-2xl font-bold mb-4">相關網址</h2>
-        <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
-            本研究的所有實作程式碼以及隱私攻擊模擬實驗皆放於 GitHub。
-        </p>
-        
-        <a href="https://github.com/peechi777/Location-Privacy-Preserving-Parking-Recommendation-Based-on-Federated-Learning" 
-           target="_blank" 
-           class="inline-flex items-center bg-white text-gray-900 px-8 py-3 rounded-full font-bold hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg">
-            <i class="fab fa-github mr-2 text-xl"></i>
-            查看 GitHub 完整專案
-        </a>
-        
-        <div class="mt-8 flex justify-center gap-6 text-xs text-gray-500">
-            <span><i class="fas fa-code mr-1"></i> Python / PyTorch</span>
-            <span><i class="fas fa-shield-alt mr-1"></i> Differential Privacy</span>
-            <span><i class="fas fa-network-wired mr-1"></i> Federated Learning</span>
-        </div>
-    </div>
-</section>
+        </section>
 
     </main>
 
-    <footer class="bg-slate-900 text-slate-500 py-8 text-center border-t border-slate-800">
-        <p>Hung-Chi Tsai (蔡泓其) - 作品集專案展示</p>
+    <footer class="bg-slate-50 text-slate-400 py-8 text-center border-t border-slate-200">
+        <p>作品集專案展示</p>
     </footer>
 
 </body>

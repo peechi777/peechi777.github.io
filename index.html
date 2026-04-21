@@ -12,11 +12,6 @@
     <header class="bg-white border-b sticky top-0 z-50">
         <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-tight">HUNG-CHI, TSAI (蔡泓其)</h1>
-            <nav class="space-x-6 text-sm font-medium">
-                <a href="#about" class="hover:text-blue-600 transition">關於我</a>
-                <a href="#projects" class="hover:text-blue-600 transition">作品集</a>
-                <a href="mailto:zoe89418@gmail.com" class="hover:text-blue-600 transition">聯絡方式</a>
-            </nav>
         </div>
     </header>
 
@@ -43,6 +38,10 @@
                         <a href="Resume.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
                             <i class="fas fa-file-pdf mr-2"></i> Resume (EN)
                         </a>
+
+                        <a href="AI系統整合實習生0421.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
+                            <i class="fas fa-file-pdf mr-2"></i> AI系統整合實習生0421_14:00
+                        </a>
                     </div>
                 </div>
                 <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-md flex items-center justify-center border-4 border-white shrink-0">
@@ -56,36 +55,42 @@
                 <span class="w-8 h-1 bg-blue-600 mr-3"></span> 精選作品 [點擊查看詳細]
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
-                    <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden border-b">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <a href="Bank-project-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
+    
+                    <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden border-b relative">
                         <img src="bank.png" alt="銀行喜好商品系統截圖" class="w-full h-full object-cover object-top">
+                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
                     </div>
+
                     <div class="p-6 flex-1 flex flex-col">
                         <h4 class="font-bold text-lg mb-2 text-blue-700">銀行個人化喜好商品系統</h4>
                         <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>針本專案採用標準 <strong>3-Tier 架構</strong> (Vue.js / Spring Boot / MySQL)，實作完整的產品 CRUD 功能。
-                                除了管理產品價格、手續費與扣款帳戶外，核心技術亮點在於模擬真實金融開發環境：</p>
+                            <p>本專案採用標準 <strong>3-Tier 架構</strong> (Vue.js / Spring Boot / MySQL)，實作完整的產品 CRUD 功能。核心技術亮點：</p>
                             <ul class="list-disc ml-4 space-y-2">
-                                <li><strong>嚴謹架構設計</strong>：後端嚴格遵循 <strong>展示層、業務層、資料層、共用層</strong> 之分層架構，並透過 <strong>Stored Procedure</strong> 進行資料庫存取以提升效能與安全性。</li>
-                                <li><strong>交易一致性</strong>：針對跨資料表異動實作 <strong>Transaction 管理</strong>，確保在高併發環境下金融資料的正確性與完整性。</li>
-                                <li><strong>資安防護實踐</strong>：系統具備防禦 <strong>SQL Injection</strong> 與 <strong>XSS 攻擊</strong> 的機制，符合金融資訊安全開發規範。</li>
-                                <li><strong>DevOps 自動化</strong>：整合 Docker Multi-stage 與 PowerShell 腳本，提供資料庫 DDL/DML 自動初始化功能。</li>
+                                <li><strong>嚴謹架構設計</strong>：後端嚴格遵循分層架構，並透過 <strong>Stored Procedure</strong> 提升效能。</li>
+                                <li><strong>交易一致性</strong>：實作 <strong>Transaction 管理</strong>，確保金融資料正確性。</li>
+                                <li><strong>資安防護實踐</strong>：具備防禦 <strong>SQL Injection</strong> 與 <strong>XSS 攻擊</strong> 之機制。</li>
+                                <li><strong>DevOps 自動化</strong>：整合 Docker 與 PowerShell 腳本自動化初始化環境。</li>
                             </ul>
                         </div>
+        
                         <div class="flex flex-wrap gap-2 mb-4">
                             <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Spring Boot 3</span>
                             <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Vue 3</span>
                             <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Docker</span>
                         </div>
-                        <a href="https://github.com/peechi777/bank-system" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
-                            查看技術細節 <i class="fas fa-arrow-right ml-1"></i>
-                        </a>
-                    </div>
-                </div>
 
-                <a href="bank-project-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
+                        <div class="flex justify-between items-center mt-auto">
+                            <span class="text-blue-600 text-sm font-semibold inline-flex items-center">
+                                 <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="FL-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
     
                     <div class="h-48 bg-slate-700 flex items-center justify-center text-white text-4xl relative overflow-hidden">
                         <i class="fas fa-parking"></i>
@@ -122,7 +127,7 @@
                 </a>
 
 
-                    
+                
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
                     <div class="h-48 bg-amber-500 flex items-center justify-center text-white text-4xl">
                         <i class="fas fa-coins"></i>
