@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實驗紀錄 | Graph RAG_260409</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+            body { 
+                /* 1. 改這行：確保中文使用無襯線體 */
+                font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+                background-color: #000000;
+                color: #94a3b8; /* 2. 改這行：文字顏色調成圖片中的灰白色 */
+                line-height: 1.7;
+            }
+            h1, h2, h3 { 
+                /* 3. 改這行：讓標題使用圖片中的襯線體 (Serif) */
+                font-family: 'Noto Serif TC', serif; 
+                font-weight: 900;
+            }
+            .mono { font-family: 'JetBrains Mono', monospace; }
+        /* 側邊標記線 */
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all 0.5s ease;
+        }
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        /* 程式碼區塊摺疊動畫 */
+        .expand-enter-active, .expand-leave-active {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+        .expand-enter-from, .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* 隱藏預設滾動條但保留功能 */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: 0.85rem !important;
+            background: #373737 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <h1 class="text-4xl font-black text-blue-800 mb-6 tracking-tight">{{ labTitle }}</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose whitespace-pre-line">
+                    {{ labDescription }}
+                </p>
+            </div>
+        </header>
+
+        <div class="space-y-40">
+<section v-for="(item, index) in experiments" :key="index" class="lab-card pl-10">
+    <div class="max-w-3xl"> <div class="mb-6">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+            <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+        </div>
+        
+        <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">
+            {{ item.content }}
+        </p>
+
+        <div class="relative">
+            <button 
+                @click="toggleCode(index)"
+                class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+            >
+                <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                {{ item.showCode ? 'Close Code' : 'View Code' }}
+                <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <transition name="expand" @after-enter="refreshPrism">
+                <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                        </div>
+                    </div>
+                    <pre class="language-cpp"><code>{{ item.code }}</code></pre>
+                </div>
+            </transition>
+        </div>
+    </div>
+</section>
+        </div>
+        
+        <div class="mt-40 flex justify-center">
+            <a :href="githubUrl" target="_blank" 
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- GitHub Icon -->
+                <svg class="w-6 h-6 fill-current z-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.82 1.102.82 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">查看詳細</span>
+                
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span></span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const githubUrl = ref("https://github.com/peechi777/ai-rookie/tree/main/0409lab/0409lab"); // 在這裡更換您的網址
+            const labTitle = ref("企業知識圖譜 Graph RAG 實作實驗");
+            const labDescription = ref(`Lab 1：建立 Vector RAG
+Lab 2：建立 Knowledge Graph
+Lab 3：用 Knowledge Graph 做 QA
+Lab 4：結合 Vector Search + Graph Retrieval
+Lab 5：從真實語料自動建圖，再做 Graph RAG
+Lab 6：替 Graph RAG 加上安全與可信度檢查
+`);
+
+            const experiments = ref([
+                { 
+        title: "建立 Vector RAG", 
+        content: `•先把文件切分、embedding、存向量庫，回答時再檢索相關文字當作上下文。
+        • 1.建立 SemanticChunker 並切分文件
+• 2.建立 Chroma 向量資料庫
+• 3.建立 RAG Chain`,  
+    code: `#1
+splitter = SemanticChunker(
+    emb,
+    breakpoint_threshold_type="percentile",
+    breakpoint_threshold_amount=90,
+)
+splits = splitter.split_documents(docs)
+print(f"SemanticChunker：{len(splits)} 個 chunk")
+
+#2
+vectordb = Chroma.from_documents(splits, emb, persist_directory="chroma_store")
+
+#3
+qa = RetrievalQA.from_chain_type(
+    llm,
+    retriever=vectordb.as_retriever(search_kwargs={"k": 4}),
+    chain_type="stuff",
+)`, 
+        showCode: false 
+    },
+                { title: "建立 Knowledge Graph", content: `• 1.把文字格式的知識轉成 Neo4j 圖資料。
+`,  
+    code: `import re, os, sys
+from neo4j import GraphDatabase
+from tqdm import tqdm
+
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j","password123"))
+
+PATTERNS = [
+    (r"^(.+?) works_at (.+?)\.$", ("Person","WORKS_AT","Company")),
+    (r"^(.+?) produces (.+?)\.$", ("Company","PRODUCES","Product")),
+    (r"^(.+?) partners_with (.+?)\.$", ("Company","PARTNERS_WITH","Company")),
+    (r"^(.+?) supplies (.+?) to (.+?)\.$", ("Company","SUPPLIES","Company")),
+    (r"^(.+?) leads (.+?)\.$", ("Person","LEADS","Product"))
+]
+
+def parse(line:str):
+    for pat,(h_l,rel,t_l) in PATTERNS:
+        m = re.match(pat,line)
+        if m:
+            if rel=="SUPPLIES":
+                head, item, tail = m.groups()
+                return (h_l, head.strip(), rel, t_l, tail.strip(), {"item":item.strip(),"source":line})
+            return (h_l, m.group(1).strip(), rel, t_l, m.group(2).strip(), {"source":line})
+    return None
+
+def upsert(tx, h_l, h, rel, t_l, t, props):
+    tx.run(f"""
+        MERGE (h:{h_l}{{name:$h}})
+        MERGE (t:{t_l}{{name:$t}})
+        MERGE (h)-[r:{rel}]->(t)
+        SET r += $props
+    """, h=h, t=t, props=props)
+
+with open("docs/data.txt") as f: lines = [l.strip() for l in f if l.strip()]
+
+with driver.session() as session:
+    session.run("MATCH (n) DETACH DELETE n")      
+    for l in tqdm(lines):
+        res = parse(l)
+        if res:
+            session.execute_write(upsert,*res)
+driver.close()
+print("Ingestion done.")`, 
+        showCode: false 
+    },
+                { title: "用 Knowledge Graph 做 QA", content: `• 提問 -> LLM 從問題中抽取實體 -> 去 Neo4j 查1到2hop的子圖 -> 三元組整理成圖譜context回答
+• 1.fetch_subgraph() 裡的 Cypher variable-length path 查詢
+• 2.qa_graph() 裡的 prompt，要求 LLM 只根據圖譜三元組回答，資訊不足時不能亂編。`,  
+    code: `#1
+    query = """
+    MATCH p=(n)-[*1..{k}]-(m)
+    WHERE n.name IN $ents
+    RETURN p LIMIT 50
+    """.format(k=max_hop)
+
+#2
+    prompt = f"""
+你是一位企業知識圖譜問答助理。請只根據下列圖譜三元組回答問題。
+如果三元組資訊不足以回答，請明確說明目前證據不足，不要編造。
+
+圖譜三元組：
+{context}
+
+問題：
+{question}
+
+請用繁體中文簡潔回答，並在需要時引用相關關係。
+"""
+
+`, 
+        showCode: false , showCode: false },
+                { title: "結合 Vector Search + Graph Retrieval", content: `• 把 Lab 1 的 Vector RAG 和 Lab 3 的 Graph QA 合起來。先用向量搜尋找到相關文件，再從文件裡抓候選實體。
+• 1.candidate_entities()：用 vectordb.similarity_search() 找文件，再用 re.findall(r"[A-Z][A-Za-z]+", ...) 抓實體
+• 2.graph_expand()：用 Cypher 查 1 到 2 hop 子圖，整理成三元組字串
+• 3.answer_with_graph()：撰寫專家 prompt，限制 LLM 只根據圖譜回答`,  
+    code: `#1
+def candidate_entities(question:str, k:int=4):
+    docs = vectordb.similarity_search(question, k=k)
+    ents = set()
+    for d in docs:
+        for tok in re.findall(r"[A-Z][A-Za-z]+", d.page_content):
+            ents.add(tok)
+    return list(ents)[:5]
+
+#2
+def graph_expand(ents, hop=2):
+    query = f"""
+    MATCH p=(n)-[*1..{hop}]-(m)
+    WHERE n.name IN $ents
+    RETURN p LIMIT 100
+    """
+    with driver.session() as s:
+        records = s.run(query, ents=ents)
+        triples = set()
+        for r in records:
+            for rel in r["p"].relationships:
+                triples.add(f"({rel.start_node['name']})-[:{rel.type}]->({rel.end_node['name']})")
+        return list(triples)
+
+#3
+    prompt = f"""
+你是一位企業知識專家。請根據提供的圖譜三元組回答使用者問題。
+規則：
+1. 只能使用下列圖譜資訊作答。
+2. 若資訊不足，請說明「目前圖譜資訊不足以回答」。
+3. 不要補充未出現在圖譜中的事實。
+
+圖譜三元組：
+{context}
+
+使用者問題：
+{question}
+
+請用繁體中文回答。
+"""
+`, 
+        showCode: false , showCode: false },
+                { title: "從真實語料自動建圖，再做 Graph RAG", content: `• 讀檔案 -> 用LLM抽取三元組 -> triples_parse.py檢查三元組格式是否合法 -> ingest_graph.py把三元組寫進 Neo4j -> build_vector_index.py建Chroma index -> graph_rag.py做Hybrid Graph RAG
+• 1.extract_triples_from_corpus.py,合法且未重複的放進 good，不合法的放進 bad
+• 2.build_vector_index.py用 SemanticChunker 切 corpus & 用 Chroma.from_documents() 建立 lab5/chroma_store
+• 3.graph_rag.py實作候選實體抽取，k=6、最多回傳 8 個,實作 Neo4j 子圖擴展，LIMIT 120`,  
+    code: `#1
+EXTRACTION_PROMPT = """
+你是一位企業知識圖譜抽取助理。請從下列繁體中文企業語料中抽取知識三元組。
+
+只允許輸出以下五種格式，每行一筆，不要輸出說明、編號、Markdown 或 JSON：
+1. Person works_at Company.
+2. Company produces Product.
+3. Company partners_with Company.
+4. Company supplies Item to Company.
+5. Person leads Product.
+
+抽取規則：
+- 人名、公司名、產品名與供應項目需保留原文中可辨識的名稱。
+- 只抽取語料中明確支持的關係，不要推測。
+- 若同一關係重複出現，只輸出一次。
+- 每行必須能完全符合上述格式，並以英文句點結尾。
+
+語料：
+__CORPUS__
+"""
+
+def filter_parsable(lines: list[str]) -> tuple[list[str], list[str]]:
+    good, bad = [], []
+    seen = set()
+    for line in lines:
+        if parse(line) is None:
+            bad.append(line)
+            continue
+        if line not in seen:
+            seen.add(line)
+            good.append(line)
+    return good, bad
+
+#2
+    splitter = SemanticChunker(
+        emb,
+        breakpoint_threshold_type="percentile",
+        breakpoint_threshold_amount=90,
+    )
+    splits = splitter.split_documents(docs)
+
+#3
+def candidate_entities(question: str, k: int = 6):
+    docs = vectordb.similarity_search(question, k=k)
+    ents = set()
+    for d in docs:
+        for tok in re.findall(r"[A-Z][A-Za-z]+", d.page_content):
+            ents.add(tok)
+    return list(ents)[:8]
+
+
+def graph_expand(ents, hop=2):
+    if not ents:
+        return []
+    query = f"""
+    MATCH p=(n)-[*1..{hop}]-(m)
+    WHERE n.name IN $ents
+    RETURN p LIMIT 120
+    """
+    with driver.session() as s:
+        records = s.run(query, ents=ents)
+        triples = set()
+        for r in records:
+            for rel in r["p"].relationships:
+                triples.add(
+                    f"({rel.start_node['name']})-[:{rel.type}]->({rel.end_node['name']})"
+                )
+        return list(triples)`, 
+        showCode: false , showCode: false },
+
+        { 
+        title: "替 Graph RAG 加上安全與可信度檢查", 
+        content: `• Lab 6 是在 Lab 4 的 Graph RAG pipeline 外面加安全防護。有四層 guardrail：
+        • 1.Input Guard：Prompt Injection 偵測:用 regex 擋掉像 ignore previous instructions、system prompt、jailbreak、DAN mode、中文角色扮演攻擊等輸入。
+• 2.Input Guard：Topic Check:用 LLM-as-judge 判斷問題是否屬於企業知識範圍。
+• 3.Retrieval Guard：Evidence Check:檢查圖譜有沒有找到足夠三元組。沒有證據就不要硬答。
+• 4.Output Guard：Grounding Check:讓 LLM 檢查產生的答案是否完全被圖譜證據支持。`,  
+    code: `#1
+INJECTION_PATTERNS = [
+    r"ignore\s+(all\s+)?(previous|above|prior)",
+    r"forget\s+(all\s+)?(previous|above|prior|your|instructions)",
+    r"disregard\s+(all\s+)?(previous|above|prior)",
+    r"reveal\s+(the\s+)?system\s+prompt",
+    r"show\s+(me\s+)?(your\s+)?system\s+(prompt|message|instructions)",
+    r"jailbreak",
+    r"\bDAN\s+mode\b",
+    r"act\s+as\s+(DAN|developer\s+mode)",
+    r"你現在是",
+    r"請扮演",
+    r"忽略(以上|先前|前面|所有).*指令",
+    r"洩露.*(系統提示|system prompt)",
+]
+
+#2
+    prompt = f"""
+你是一個企業知識問答系統的輸入審查器。
+請判斷使用者問題是否屬於企業知識範疇，例如公司、產品、供應鏈、合作夥伴、人員職責、內部流程、IT 工單、事故、投資人或媒體簡報資訊。
+
+只輸出 JSON，不要加上 Markdown 或額外文字：
+{{"relevant": true/false, "reason": "簡短原因"}}
+
+使用者問題：
+{question}
+"""
+
+#3
+def guard_evidence(triples: list, min_count: int = 1) -> dict:
+    """Retrieval guardrail：證據不足時拒答，避免憑空生成。"""
+    count = len(triples)
+    if count < min_count:
+        return {"pass": False, "reason": f"證據不足，只找到 {count} 筆三元組，至少需要 {min_count} 筆"}
+    return {"pass": True, "reason": f"已找到 {count} 筆三元組證據"}
+	
+#4
+    prompt = f"""
+你是一個事實查核器。請根據提供的圖譜證據，檢查回答是否完全有依據。
+
+判斷規則：
+- 如果回答中的所有事實都能由圖譜證據直接支持，grounded 為 true。
+- 如果回答包含圖譜證據沒有支持的新增事實、推測或矛盾，grounded 為 false。
+- 只輸出 JSON，不要加上 Markdown 或額外文字。
+
+圖譜證據：
+{context}
+
+待查核回答：
+{answer}
+
+輸出格式：
+{{"grounded": true/false, "reason": "簡短原因"}}
+"""`, 
+        showCode: false 
+    },
+        
+            ]);
+
+            const toggleCode = (index) => {
+                experiments.value[index].showCode = !experiments.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labTitle, labDescription, experiments, scrollPercent, githubUrl, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

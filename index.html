@@ -1,174 +1,126 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+    <title>HUNG-CHI, TSAI | Portfolio</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUNG-CHI, TSAI | Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background: #000000;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+        h1, h2, h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .lab-card { border-left: 1px solid #f1f5f9; transition: all .5s ease; }
+        .lab-card:hover { border-left-color: var(--accent); }
+        .glass-panel { background: rgba(15, 23, 42, .38); border: 1px solid rgba(148, 163, 184, .18); }
+        .media-frame { background: #0f172a; border: 1px solid rgba(148, 163, 184, .2); box-shadow: 0 20px 60px rgba(37, 99, 235, .1); }
+        .tag { border: 1px solid rgba(37, 99, 235, .32); color: #bfdbfe; background: rgba(37, 99, 235, .08); }
+        .cta { box-shadow: 0 0 20px rgba(37, 99, 235, .1); }
+        .cta:hover { box-shadow: 0 0 30px rgba(37, 99, 235, .22); }
+    </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body>
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div id="scrollbar" class="h-full bg-blue-500 transition-all duration-150" style="width:0%"></div>
+    </nav>
 
-    <header class="bg-white border-b sticky top-0 z-50">
-        <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-tight">HUNG-CHI, TSAI (蔡泓其)</h1>
+    <main class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.28em] uppercase mb-5">Portfolio</p>
+            <h1 class="text-4xl md:text-6xl font-black text-blue-800 mb-8 tracking-tight">HUNG-CHI, TSAI</h1>
+            <div class="max-w-2xl border-l-2 border-slate-200 pl-6">
+                <p class="text-slate-400 font-light leading-loose">您好 我是蔡泓其 以下是內容為相關作品集</p>
+                <div class="mt-8 flex flex-wrap gap-3">
+                    <a href="https://github.com/peechi777" target="_blank" class="tag rounded-full px-4 py-2 text-xs mono uppercase tracking-wider hover:border-blue-400 transition"><i class="fab fa-github mr-2"></i>GitHub</a>
+                    <a href="mailto:zoe89418@gmail.com" class="tag rounded-full px-4 py-2 text-xs mono uppercase tracking-wider hover:border-blue-400 transition"><i class="fas fa-envelope mr-2"></i>Email</a>
+                    <a href="Resume.pdf" target="_blank" class="tag rounded-full px-4 py-2 text-xs mono uppercase tracking-wider hover:border-blue-400 transition"><i class="fas fa-file-pdf mr-2"></i>Resume</a>
+                    <a href="履歷.pdf" target="_blank" class="tag rounded-full px-4 py-2 text-xs mono uppercase tracking-wider hover:border-blue-400 transition"><i class="fas fa-file-pdf mr-2"></i>CV</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="mb-32 grid md:grid-cols-[1fr_12rem] gap-10 items-start">
+
+            <div class="md:pt-8">
+                <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase mb-3"></p>
+                <p class="text-sm text-slate-400 leading-loose"></p>
+            </div>
+        </section>
+
+        <section class="space-y-40">
+            <a href="bank-project-detail.html" class="lab-card block pl-10 group">
+                <div class="max-w-3xl">
+                    <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Project 01</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-6">銀行商品</h2>
+                    <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">Spring Boot 3、Vue 3、MySQL 與 Docker Compose 組成的三層式系統，涵蓋商品管理、會員操作、交易一致性與 Stored Procedure 實作。</p>
+                    <div class="media-frame rounded-xl overflow-hidden mb-8"><img src="bank.png" alt="Bank system" class="w-full max-h-80 object-cover object-top opacity-90 group-hover:opacity-100 transition"></div>
+                    <div class="flex flex-wrap gap-2 mb-8"><span class="tag rounded-full px-3 py-1 text-[10px] mono">Spring Boot</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Vue 3</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">MySQL</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Docker</span></div>
+                    <span class="inline-flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 group-hover:text-blue-500 transition"><span class="w-8 h-px bg-slate-200 group-hover:bg-blue-300"></span>View Case<i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i></span>
+                </div>
+            </a>
+
+            <a href="FL-project-detail.html" class="lab-card block pl-10 group">
+                <div class="max-w-3xl">
+                    <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Project 02</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-6">聯邦學習停車推薦研究</h2>
+                    <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">結合 Federated Learning、Differential Privacy 與 LSTM，處理位置隱私、非 IID 資料與個人化預測的研究型專案。</p>
+                    <div class="media-frame rounded-xl overflow-hidden mb-8"><img src="FL.png" alt="Federated learning project" class="w-full max-h-80 object-cover object-top opacity-90 group-hover:opacity-100 transition"></div>
+                    <div class="flex flex-wrap gap-2 mb-8"><span class="tag rounded-full px-3 py-1 text-[10px] mono">Federated Learning</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">LSTM</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">PyTorch</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Privacy</span></div>
+                    <span class="inline-flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 group-hover:text-blue-500 transition"><span class="w-8 h-px bg-slate-200 group-hover:bg-blue-300"></span>View Case<i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i></span>
+                </div>
+            </a>
+
+            <a href="https://github.com/peechi777/slot-game" target="_blank" class="lab-card block pl-10 group">
+                <div class="max-w-3xl">
+                    <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Project 03</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-6">Slot Game</h2>
+                    <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">以前端互動和遊戲邏輯為核心的小型作品，包含轉軸狀態、投注流程與中獎判斷。</p>
+                    <div class="media-frame rounded-xl overflow-hidden mb-8"><img src="slot.png" alt="Slot game" class="w-full max-h-80 object-cover object-top opacity-90 group-hover:opacity-100 transition"></div>
+                    <div class="flex flex-wrap gap-2 mb-8"><span class="tag rounded-full px-3 py-1 text-[10px] mono">JavaScript</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Canvas / DOM</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Game Logic</span></div>
+                    <span class="inline-flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 group-hover:text-blue-500 transition"><span class="w-8 h-px bg-slate-200 group-hover:bg-blue-300"></span>Open GitHub<i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i></span>
+                </div>
+            </a>
+            <a href="ai-labs.html" class="lab-card block pl-10 group">
+                <div class="max-w-3xl">
+                    <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Project 04</span>
+                    <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-6">AI 新秀相關 Lab</h2>
+                    <p class="text-slate-400 mb-8 text-sm md:text-base leading-relaxed">整理 AI 新秀課程與實驗紀錄，包含 Transformer、Distributed、LLM、Graph RAG、Guru、SFT 與 GRPO。點進去後可用膠囊快速開啟各個 lab 頁面。</p>
+                    <div class="media-frame rounded-xl overflow-hidden mb-8 p-8">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">Transformer</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">Distributed</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">LLM</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">Graph RAG</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">Guru</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">SFT</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">GRPO</span>
+                            <span class="tag rounded-full px-4 py-3 text-center text-[10px] mono">Labs</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mb-8"><span class="tag rounded-full px-3 py-1 text-[10px] mono">AI Rookie</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">Lab Notes</span><span class="tag rounded-full px-3 py-1 text-[10px] mono">HTML</span></div>
+                    <span class="inline-flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 group-hover:text-blue-500 transition"><span class="w-8 h-px bg-slate-200 group-hover:bg-blue-300"></span>Open Labs<i class="fas fa-arrow-right group-hover:translate-x-2 transition"></i></span>
+                </div>
+            </a>
+        </section>
+
+        <div class="mt-40 flex justify-center">
+            <a href="https://github.com/peechi777?tab=repositories" target="_blank" class="cta group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden">
+                <span class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                <i class="fab fa-github text-2xl z-10"></i><span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">More Repositories</span><i class="fas fa-arrow-right z-10 group-hover:translate-x-2 transition"></i>
+            </a>
         </div>
-    </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
-        
-        <section id="about" class="mb-20">
-            <div class="flex flex-col md:flex-row items-center gap-10">
-                <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-5xl font-extrabold mb-8">你好，我是 蔡泓其</h2>
-                    
-                    <div class="flex flex-wrap justify-center md:justify-start gap-3">
-                        <a href="https://github.com/peechi777" target="_blank" class="bg-black text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:opacity-80 transition shadow-sm">
-                            <i class="fab fa-github mr-2"></i> GitHub
-                        </a>
-                        
-                        <a href="mailto:zoe89418@gmail.com" class="border border-gray-300 px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-gray-100 transition shadow-sm bg-white">
-                            <i class="fas fa-envelope mr-2"></i> Email
-                        </a>
-
-                        <a href="履歷.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
-                            <i class="fas fa-file-pdf mr-2"></i> 履歷 (中)
-                        </a>
-
-                        <a href="Resume.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
-                            <i class="fas fa-file-pdf mr-2"></i> Resume (EN)
-                        </a>
-
-                        <a href="AI系統整合實習生0421.pdf" target="_blank" class="bg-blue-600 text-white px-5 py-2.5 rounded-full text-sm font-medium flex items-center hover:bg-blue-700 transition shadow-sm">
-                            <i class="fas fa-file-pdf mr-2"></i> AI系統整合實習生0421_14:00
-                        </a>
-                    </div>
-                </div>
-                <div class="w-48 h-48 bg-gray-200 rounded-2xl overflow-hidden shadow-md flex items-center justify-center border-4 border-white shrink-0">
-                    <img src="photo.jpg" alt="蔡泓其 個人照" class="w-full h-full object-cover">
-                </div>
-            </div>
-        </section>
-
-        <section id="projects">
-            <h3 class="text-2xl font-bold mb-8 flex items-center">
-                <span class="w-8 h-1 bg-blue-600 mr-3"></span> 精選作品 [點擊查看詳細]
-            </h3>
-            
-                
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <a href="bank-project-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
-    
-                    <div class="h-48 bg-gray-100 flex items-center justify-center overflow-hidden border-b relative">
-                        <img src="bank.png" alt="銀行喜好商品系統截圖" class="w-full h-full object-cover object-top">
-                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                    </div>
-
-                    <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg mb-2 text-blue-700">銀行個人化喜好商品系統</h4>
-                        <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>本專案採用標準 <strong>3-Tier 架構</strong> (Vue.js / Spring Boot / MySQL)，實作完整的產品 CRUD 功能。核心技術亮點：</p>
-                            <ul class="list-disc ml-4 space-y-2">
-                                <li><strong>嚴謹架構設計</strong>：後端嚴格遵循分層架構，並透過 <strong>Stored Procedure</strong> 提升效能。</li>
-                                <li><strong>交易一致性</strong>：實作 <strong>Transaction 管理</strong>，確保金融資料正確性。</li>
-                                <li><strong>資安防護實踐</strong>：具備防禦 <strong>SQL Injection</strong> 與 <strong>XSS 攻擊</strong> 之機制。</li>
-                                <li><strong>DevOps 自動化</strong>：整合 Docker 與 PowerShell 腳本自動化初始化環境。</li>
-                            </ul>
-                        </div>
-        
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Spring Boot 3</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Vue 3</span>
-                            <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded border border-blue-100">Docker</span>
-                        </div>
-
-                        <div class="flex justify-between items-center mt-auto">
-                            <span class="text-blue-600 text-sm font-semibold inline-flex items-center">
-                                 <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
-                            </span>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="FL-detail.html" class="block bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group flex flex-col h-full">
-    
-                    <div class="h-48 bg-slate-700 flex items-center justify-center text-white text-4xl relative overflow-hidden">
-                        <i class="fas fa-parking"></i>
-                        <img src="FL.png" alt="系統架構圖" class="w-full h-full object-cover object-top absolute inset-0">
-                        <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                    </div>
-
-                    <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg mb-2 text-slate-800">基於聯邦學習的具位置隱私保護之停車推薦 (論文)</h4>
-                        <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>本研究開發一套能在不洩漏使用者原始數據的前提下，實現高效率停車位預測的智慧系統，主要技術貢獻如下：</p>
-                            <ul class="list-disc ml-4 space-y-2">
-                                <li><strong>分散式聯邦學習 (FL)</strong>：透過設備端本地訓練模型，僅上傳模型權重而非原始路徑數據，從根源降低數據洩漏風險並節省傳輸頻寬。</li>
-                                <li><strong>時間距離模糊化</strong>：針對位置隱私進行動態調整模糊化處理，在維持推薦精準度的同時，確保使用者行蹤安全。</li>
-                                <li><strong>RNN-LSTM 序列預測</strong>：利用 LSTM 記憶門控機制處理停車場歷史與即時數據，捕捉長期時間依賴關係，達成高精確度的空位率預測。</li>
-                                <li><strong>5G C-V2X 整合</strong>：模擬車聯網通訊技術，支援 RSU 與車輛間的即時數據交換，提供系統所需的實時支持。</li>
-                            </ul>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Federated Learning</span>
-                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">LSTM</span>
-                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">Python</span>
-                            <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded border border-slate-200">PyTorch</span>
-                        </div>
-
-
-                        <div class="flex justify-between items-center mt-auto">
-                            <span class="text-blue-600 text-sm font-semibold inline-flex items-center">
-                                 <i class="fas fa-arrow-right ml-1 group-hover:translate-x-1 transition-transform"></i>
-                            </span>
-                            <span class="text-gray-400 text-sm font-semibold italic">成果發表於 APWCS 2024</span>
-                        </div>
-                    </div>
-                </a>
-
-
-                
-                <div class="bg-white rounded-xl shadow-sm border overflow-hidden hover:shadow-md transition flex flex-col">
-                    <div class="h-48 bg-amber-500 flex items-center justify-center text-white text-4xl">
-                        <i class="fas fa-coins"></i>
-                        <img src="slot.png" alt="slot game" class="w-full h-full object-cover object-top">
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-bold text-lg mb-1 text-amber-700">老虎機遊戲開發 (Slot Games)</h4>
-                        <p class="text-sm font-semibold text-gray-500 mb-4 italic">「結合數值邏輯與動態表現的網頁遊戲實作」</p>
-        
-                        <div class="text-sm text-gray-600 mb-6 flex-1 space-y-3">
-                            <p>實作多款老虎機遊戲邏輯，專注於高效能渲染與複雜的遊戲數值計算，包含以下開發重點：</p>
-                            <ul class="list-disc ml-4 space-y-1 text-xs">
-                                <li><strong>滾輪運算邏輯</strong>：實作自定義權重之滾輪隨機演算法，確保遊戲公平性與 RTP (Return to Player) 的數值穩定性。</li>
-                                <li><strong>數據優化</strong>：根據不同的情境要求，設計出不同的excel機率表。</li>
-                                <li><strong>狀態機管理</strong>：精確控制 Spin、Stop、Win、Bonus Game 等遊戲狀態切換，確保前後端資料同步。</li>
-                            </ul>
-                        </div>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="bg-amber-50 text-amber-600 text-[10px] px-2 py-1 rounded border border-amber-100 font-medium">Canvas / DOM</span>
-                            <span class="bg-amber-50 text-amber-600 text-[10px] px-2 py-1 rounded border border-amber-100 font-medium">JavaScript (ES6+)</span>
-                            <span class="bg-amber-50 text-amber-600 text-[10px] px-2 py-1 rounded border border-amber-100 font-medium">Game Logic</span>
-                            </div>
-                            <a href="https://github.com/peechi777/slot-game" target="_blank" class="text-blue-600 text-sm font-semibold hover:underline mt-auto inline-flex items-center">
-                                查看儲存庫 <i class="fas fa-arrow-right ml-1"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            <div class="mt-16 text-center">
-                <a href="https://github.com/peechi777?tab=repositories" target="_blank" class="inline-flex items-center text-gray-500 hover:text-blue-600 font-medium transition group">
-                    <span>在 GitHub 上查看更多專案</span>
-                    <i class="fas fa-arrow-right ml-2 bounce-x"></i>
-                </a>
-            </div>
-        </section>
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]"><span>2026</span><span>Built with Tailwind CSS</span></footer>
     </main>
-
-    <footer class="text-center py-10 text-gray-400 text-sm border-t mt-20">
-        © 2026 HUNG-CHI, TSAI. Built with Tailwind CSS.
-    </footer>
-
+    <script>window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('scrollbar').style.width=(h?window.scrollY/h*100:0)+'%';});</script>
 </body>
 </html>
+

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實驗紀錄 | GRPO_260505</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+            body { 
+                /* 1. 改這行：確保中文使用無襯線體 */
+                font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+                background-color: #000000;
+                color: #94a3b8; /* 2. 改這行：文字顏色調成圖片中的灰白色 */
+                line-height: 1.7;
+            }
+            h1, h2, h3 { 
+                /* 3. 改這行：讓標題使用圖片中的襯線體 (Serif) */
+                font-family: 'Noto Serif TC', serif; 
+                font-weight: 900;
+            }
+            .mono { font-family: 'JetBrains Mono', monospace; }
+        /* 側邊標記線 */
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all 0.5s ease;
+        }
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        /* 程式碼區塊摺疊動畫 */
+        .expand-enter-active, .expand-leave-active {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+        .expand-enter-from, .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* 隱藏預設滾動條但保留功能 */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: 0.85rem !important;
+            background: #373737 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <h1 class="text-4xl font-black text-blue-800 mb-6 tracking-tight">{{ labTitle }}</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose whitespace-pre-line">
+                    {{ labDescription }}
+                </p>
+            </div>
+        </header>
+
+        <div class="space-y-40">
+<section v-for="(item, index) in experiments" :key="index" class="lab-card pl-10">
+    <div class="max-w-3xl"> <div class="mb-6">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+            <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+        </div>
+        
+        <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">
+            {{ item.content }}
+        </p>
+
+        <div class="relative">
+            <button 
+                @click="toggleCode(index)"
+                class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+            >
+                <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                {{ item.showCode ? 'Close Code' : 'View Code' }}
+                <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <transition name="expand" @after-enter="refreshPrism">
+                <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                        </div>
+                    </div>
+                    <pre class="language-cpp"><code>{{ item.code }}</code></pre>
+                </div>
+            </transition>
+        </div>
+    </div>
+</section>
+        </div>
+        
+        <div class="mt-40 flex justify-center">
+            <a :href="githubUrl" target="_blank" 
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- GitHub Icon -->
+                <svg class="w-6 h-6 fill-current z-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.82 1.102.82 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">查看詳細</span>
+                
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span></span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const githubUrl = ref("https://github.com/peechi777/ai-rookie/tree/main/2026_ai_rookie_course8"); // 在這裡更換您的網址
+            const labTitle = ref("LLM Alignment Pipeline：從 Baseline 到 GRPO 強化學習");
+            const labDescription = ref(`本專案實作一套完整的 LLM Alignment Pipeline，
+從 Baseline 推論、Reward Function 設計，到 GRPO 強化學習訓練與評估。
+
+透過 Tool Calling 任務，
+讓模型學習輸出正確的 JSON 格式與工具參數，
+並量化訓練前後的 Alignment 改善效果。
+`);
+
+            const experiments = ref([
+                { 
+        title: "環境設定與 Baseline 推論", 
+        content: `建立Baseline，記錄模型訓練前的表現。用來訓練後比較模型是否有進步。`,  
+    code: `def run_inference(case):
+    messages = [
+        # TODO: 複習:如同Course7，  先加入 system prompt 
+        {"role": "system", "content": system_prompt()}
+
+
+        # TODO: 把 case["messages"] 接上來
+    ]
+    messages.extend(case["messages"])
+    return call_llm(messages)
+
+
+def main():
+    if not INPUT_FILE.exists():
+        raise FileNotFoundError(f"找不到輸入檔案: {INPUT_FILE}")
+
+    cases = load_json(INPUT_FILE)
+    outputs = []
+
+    for case in cases:
+        print(f"Running case: {case['id']}")
+        try:
+            prediction = run_inference(case)
+        except Exception as e:
+            print(f"[ERROR] {case['id']}: {e}")
+            prediction = ""
+        
+        print(prediction)
+        # TODO: 觀察prediction裡面是否有reasoning回覆 </think>
+        # 請移除reasoning的部分，留下tool call回復或是模型的最終回答
+        if "</think>" in prediction:
+            prediction = prediction.split("</think>")[-1].strip()
+        print(f"Prediction result: {prediction}")
+        
+        outputs.append({
+            "id": case["id"],
+            "messages": case["messages"],
+            "predict": prediction,
+            "expect": case["expect"],
+        })
+
+    save_json(OUTPUT_FILE, outputs)
+    print(f"Saved to {OUTPUT_FILE}")`, 
+        showCode: false 
+    },
+                { title: "資料集與 Reward Function", content: `1.學習 GRPO 的資料格式與 Reward Function 設計。
+                2.會針對同一個 prompt 生成多個 completions，再透過 Reward Function 根據格式是否正確、工具是否選對、參數是否完整來評分。`,  
+    code: `    # TODO: 實作格式 reward function
+    # 
+    # Step 1: 使用 extract_json() 嘗試解析 JSON
+    # Step 2: 根據解析結果和欄位存在與否給分
+    # 
+    # 提示：
+    # - parsed, error = extract_json(response)
+    # - 如果 parsed 是 None，回傳 0.0
+    # - 檢查是否有 "name" 欄位
+    # - 檢查是否有 "arguments" 欄位
+    # - 檢查 name 是否在 get_tool_names() 中
+    # - 檢查是否有 "type": "tool_call"
+    
+    # Step 1：嘗試解析 JSON
+    parsed, error = extract_json(response)
+    
+    if parsed is None:
+        # 無法解析為 JSON
+        return 0.0
+    
+    # Step 2：檢查是否為字典
+    if not isinstance(parsed, dict):
+        return 0.1
+    
+    # 基礎分數：至少是 JSON 物件
+    score = 0.3
+    
+    # Step 3：檢查 name 欄位
+    if "name" in parsed:
+        score = 0.5
+        
+        # Step 4：檢查 arguments 欄位
+        if "arguments" in parsed:
+            score = 0.7
+            
+            # Step 5：檢查 name 是否為有效工具
+            valid_tools = get_tool_names()
+            if parsed["name"] in valid_tools:
+                score = 0.85
+                
+                # Step 6：檢查是否有 type: tool_call
+                if parsed.get("type") == "tool_call":
+                    score = 1.0
+    
+    return score
+
+
+# ==============================================================================
+# Reward Function 2：工具正確性
+# ==============================================================================
+
+def tool_correctness_reward(
+    response: str, 
+    expected_tool: str, 
+    expected_args: dict
+) -> float:
+    """
+    評估工具選擇和參數的正確性
+    
+    這個 reward function 檢查模型是否選擇了正確的工具，
+    並填入了正確的參數。
+    
+    評分標準：
+    ┌────────┬─────────────────────────────────────────┐
+    │  分數  │ 條件                                    │
+    ├────────┼─────────────────────────────────────────┤
+    │  0.0   │ JSON 解析失敗                           │
+    │  0.3   │ JSON 正確但工具名稱錯誤                 │
+    │  0.6   │ 工具名稱正確但參數錯誤/缺失             │
+    │  0.8   │ 工具和必填參數正確，但有額外參數        │
+    │  1.0   │ 工具和參數都完全正確                    │
+    └────────┴─────────────────────────────────────────┘
+    
+    Args:
+        response: 模型的原始回應字串
+        expected_tool: 期望的工具名稱
+        expected_args: 期望的參數字典
+    
+    Returns:
+        0.0 ~ 1.0 的分數
+    
+    Example:
+        >>> tool_correctness_reward(
+        ...     '{"name":"get_order_status","arguments":{"order_id":"A123456789"}}',
+        ...     "get_order_status",
+        ...     {"order_id": "A123456789"}
+        ... )
+        1.0
+    """
+    
+    # TODO: 實作工具正確性 reward function
+    #
+    # Step 1: 解析 JSON
+    # Step 2: 檢查工具名稱是否正確
+    # Step 3: 檢查參數是否正確
+    #
+    # 提示：
+    # - 使用 extract_json() 解析
+    # - 比較 parsed.get("name") 和 expected_tool
+    # - 比較 parsed.get("arguments", {}) 和 expected_args
+    
+    # Step 1：解析 JSON
+    parsed, error = extract_json(response)
+    
+    if parsed is None:
+        return 0.0
+    
+    # Step 2：檢查工具名稱
+    actual_tool = parsed.get("name")
+    
+    if actual_tool != expected_tool:
+        # 工具名稱錯誤，但至少是 JSON
+        return 0.3
+    
+    # Step 3：檢查參數
+    actual_args = parsed.get("arguments", {})
+    
+    # 檢查所有期望的參數是否存在且正確
+    all_args_correct = True
+    for key, expected_value in expected_args.items():
+        actual_value = actual_args.get(key)
+        if actual_value != expected_value:
+            all_args_correct = False
+            break
+    
+    if not all_args_correct:
+        # 工具正確但參數錯誤
+        return 0.6
+    
+    # 檢查是否有額外的參數
+    extra_args = set(actual_args.keys()) - set(expected_args.keys())
+    if extra_args:
+        # 有額外參數（不一定是錯的，但不完美）
+        return 0.8
+    
+    # 完全正確
+    return 1.0
+
+=============================================================================
+
+def main():
+    """
+    主程式
+    """
+    print("=" * 70)
+    print("Lab 2：Reward Function 測試")
+    print("=" * 70)
+    
+    # Step 1：建立範例資料
+    print("\n📦 建立範例 completions...")
+    samples = create_sample_completions()
+    print(f"   共 {len(samples)} 個案例")
+    
+    # Step 2：計算 reward
+    print("\n🔢 計算 reward 分數...")
+    results = evaluate_completions(samples)
+    
+    # Step 3：顯示結果
+    print_results(results)
+    
+    # Step 4：產生 GRPO 格式資料
+    print("\n\n" + "=" * 70)
+    print("📋 GRPO 訓練資料格式預覽")
+    print("=" * 70)
+    
+    grpo_data = create_grpo_format(results)
+    
+    # 顯示第一個範例
+    print("\n範例資料結構：")
+    print(json.dumps(grpo_data[0], ensure_ascii=False, indent=2)[:500] + "...")
+    
+    # 儲存 GRPO 格式資料
+    output_file = "grpo_sample_data.json"
+    save_json(grpo_data, output_file)
+    print(f"\n💾 GRPO 格式資料已儲存至 {output_file}")
+    
+    # Step 5：統計摘要
+    print("\n\n" + "=" * 70)
+    print("📊 統計摘要")
+    print("=" * 70)
+    
+    all_rewards = []
+    for sample in results:
+        all_rewards.extend([c["reward"] for c in sample["completions"]])
+    
+    high_reward = sum(1 for r in all_rewards if r >= 0.8)
+    medium_reward = sum(1 for r in all_rewards if 0.4 <= r < 0.8)
+    low_reward = sum(1 for r in all_rewards if r < 0.4)
+    
+    print(f"\n總 completion 數：{len(all_rewards)}")
+    print(f"  🟢 高分 (>=0.8)：{high_reward} ({high_reward/len(all_rewards)*100:.1f}%)")
+    print(f"  🟡 中分 (0.4-0.8)：{medium_reward} ({medium_reward/len(all_rewards)*100:.1f}%)")
+    print(f"  🔴 低分 (<0.4)：{low_reward} ({low_reward/len(all_rewards)*100:.1f}%)")
+    
+    print("\n✅ 測試完成！")
+    print("\n💡 觀察重點：")
+    print("   1. 完美格式的回應得到最高分")
+    print("   2. 部分正確（如缺少 type 欄位）得到中等分數")
+    print("   3. 完全錯誤（非 JSON）得到最低分")
+    print("   4. 在追問場景中，不輸出 JSON 反而是正確的")
+
+
+if __name__ == "__main__":
+    main()
+`, 
+        showCode: false , showCode: false },
+                { title: "GRPO 訓練資料", content: `GRPO 訓練：只需要 prompt → 模型自己生成多個回答 → reward function 評分`,  
+    code: `ORDER_PROMPTS = [
+    "幫我查訂單 {order_id} 目前狀態",
+    "我的訂單 {order_id} 到哪了",
+    "查一下 {order_id} 這筆訂單",
+    "訂單編號 {order_id}，幫我看一下狀態",
+    "請問訂單 {order_id} 現在是什麼情況",
+    "{order_id} 這個訂單出貨了嗎",
+    "我想知道 {order_id} 的訂單進度",
+    "幫我確認一下訂單 {order_id}",
+]
+    ...`, 
+        showCode: false , showCode: false },
+
+        { 
+        title: "GRPO 訓練", 
+        content: `    訓練流程：
+    1. 載入預訓練模型（Qwen3.5-4B）
+    2. 設定 LoRA 進行高效微調
+    3. 定義 Reward Function
+    4. 執行 GRPO 訓練
+    5. 儲存訓練後的模型`,  
+    code: `def main():
+    """
+    主程式
+    """
+    print("=" * 60)
+    print("Lab 4：GRPO 訓練")
+    print("=" * 60)
+    
+    # 檢查 GPU
+    if not torch.cuda.is_available():
+        print("\n❌ 未偵測到 GPU，GRPO 訓練需要 GPU")
+        print("   請確認 CUDA 環境已正確設定")
+        return
+    
+    print(f"\n🖥️  GPU：{torch.cuda.get_device_name(0)}")
+    print(f"   VRAM：{torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f} GB")
+    
+    # Step 1：載入訓練資料
+    print("\n📂 載入訓練資料...")
+    training_data_path = "../lab3/training_prompts.json"
+    
+    if not os.path.exists(training_data_path):
+        print(f"   ❌ 找不到 {training_data_path}")
+        print("   請先至 lab3 執行 python 1_prepare_dataset.py")
+        return
+    
+    dataset = load_training_data(training_data_path)
+    print(f"   載入 {len(dataset)} 筆訓練資料")
+    
+    # Step 2：載入模型
+    print("\n🤖 載入模型...")
+    model, tokenizer = load_model_and_tokenizer()
+    
+    # Step 3：設定 GRPO Trainer
+    print("\n⚙️  設定 GRPO Trainer...")
+    
+    grpo_config = GRPOConfig(
+        **GRPO_CONFIG,
+        remove_unused_columns=False,  # 保留額外欄位
+    )
+    
+    # 自定義 reward function（TRL 會傳入 completion_ids、trainer_state 等額外參數）
+    def reward_fn(
+        prompts,
+        completions,
+        task_type=None,
+        expected_tool=None,
+        should_clarify=None,
+        metadata=None,
+        completion_ids=None,
+        trainer_state=None,
+        **kwargs,
+    ):
+        """包裝 reward function，接收資料集欄位"""
+        rewards = []
+        for i, completion in enumerate(completions):
+            prompt_data = {
+                "task_type": task_type[i] if task_type else "",
+                "expected_tool": expected_tool[i] if expected_tool else "",
+                "should_clarify": should_clarify[i] if should_clarify else False,
+                "metadata": json.loads(metadata[i]) if metadata else {},
+            }
+            reward = compute_reward(completion, prompt_data)
+            rewards.append(reward)
+        return rewards
+    
+    trainer = GRPOTrainer(
+        model=model,
+        args=grpo_config,
+        train_dataset=dataset,
+        reward_funcs=reward_fn,
+    )
+    
+    # Step 4：開始訓練
+    print("\n🚀 開始 GRPO 訓練...")
+    print("-" * 60)
+    
+    trainer.train()
+    
+    print("-" * 60)
+    print("\n✅ 訓練完成！")
+    
+    # Step 5：儲存模型
+    print("\n💾 儲存模型...")
+    output_dir = GRPO_CONFIG["output_dir"]
+    trainer.save_model(f"{output_dir}/final")
+    tokenizer.save_pretrained(f"{output_dir}/final")
+    print(f"   模型已儲存至 {output_dir}/final")
+    
+    print("\n✅ 全部完成！")
+    print("   下一步：前往 lab5 執行 python 1_evaluate_trained.py 評估訓練成果")
+
+
+if __name__ == "__main__":
+    main()`, 
+        showCode: false 
+    },
+            { 
+        title: "評估訓練成果", 
+        content: `1.載入並使用訓練後的模型（LoRA adapter）產生推論結果
+2.使用與 Lab 1 相同的評估腳本，量化訓練前後的差異
+`,  
+    code: `def run_inference(case):
+    messages = [
+        # TODO: 複習:如同Course7，  先加入 system prompt 
+        {"role": "system", "content": system_prompt()}
+
+
+        # TODO: 把 case["messages"] 接上來
+    ]
+    messages.extend(case["messages"])
+    data = {
+            "model": "customer_service_lora", # 訓練後的模型名稱
+            "messages": messages,
+            "temperature": 0,
+            "max_tokens": 1024
+        }
+        
+    url = "http://127.0.0.1:18299/v1/chat/completions"
+        
+    response = requests.post(url, json=data)
+    response.raise_for_status()
+    result = response.json()
+        
+    return result["choices"][0]["message"]["content"]
+
+
+def main():
+    if not INPUT_FILE.exists():
+        raise FileNotFoundError(f"找不到輸入檔案: {INPUT_FILE}")
+
+    cases = load_json(INPUT_FILE)
+    outputs = []
+
+    for case in cases:
+        print(f"Running case: {case['id']}")
+        try:
+            prediction = run_inference(case)
+        except Exception as e:
+            print(f"[ERROR] {case['id']}: {e}")
+            prediction = ""
+        
+        print(prediction)
+        # TODO: 觀察prediction裡面是否有reasoning回覆 </think>
+        # 請移除reasoning的部分，留下tool call回復或是模型的最終回答
+        if "</think>" in prediction:
+            prediction = prediction.split("</think>")[-1].strip()
+        print(f"Prediction result: {prediction}")
+        
+        outputs.append({
+            "id": case["id"],
+            "messages": case["messages"],
+            "predict": prediction,
+            "expect": case["expect"],
+        })
+
+    save_json(OUTPUT_FILE, outputs)
+    print(f"Saved to {OUTPUT_FILE}")`, 
+        showCode: false 
+    },
+
+        
+            ]);
+
+            const toggleCode = (index) => {
+                experiments.value[index].showCode = !experiments.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labTitle, labDescription, experiments, scrollPercent, githubUrl, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

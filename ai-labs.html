@@ -1,0 +1,68 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <title>AI 新秀相關 Lab | HUNG-CHI, TSAI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; background: #000000; color: #94a3b8; line-height: 1.7; }
+        h1, h2, h3 { font-family: 'Noto Serif TC', serif; font-weight: 900; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .lab-card { border-left: 1px solid #f1f5f9; transition: all .5s ease; }
+        .lab-card:hover { border-left-color: var(--accent); }
+        .glass-panel { background: rgba(15, 23, 42, .38); border: 1px solid rgba(148, 163, 184, .18); }
+        .tag { border: 1px solid rgba(37, 99, 235, .32); color: #bfdbfe; background: rgba(37, 99, 235, .08); }
+        .pill { border: 1px solid rgba(37, 99, 235, .35); color: #cbd5e1; background: rgba(15, 23, 42, .52); box-shadow: 0 0 20px rgba(37, 99, 235, .08); }
+        .pill:hover { border-color: #3b82f6; color: #fff; box-shadow: 0 0 30px rgba(37, 99, 235, .2); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div id="scrollbar" class="h-full bg-blue-500 transition-all duration-150" style="width:0%"></div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <a href="index.html" class="mono text-[10px] text-slate-400 hover:text-blue-500 uppercase tracking-[0.2em]"><i class="fas fa-arrow-left mr-2"></i>Back Portfolio</a>
+            <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.28em] uppercase mt-10 mb-5">AI Rookie Labs</p>
+            <h1 class="text-4xl md:text-6xl font-black text-blue-800 mb-8 tracking-tight">AI 新秀相關 Lab</h1>
+            <p class="max-w-2xl text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose">AI 新秀課程實驗紀錄以及相關作品內容。</p>
+        </header>
+
+        <section class="lab-card pl-10 mb-32">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Choose A Lab</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-10">Labs</h2>
+            <div class="flex flex-wrap gap-4">
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="0327.html" target="_blank">Transformer 260327</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="0422.html" target="_blank">Distributed 260422</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="course4.html" target="_blank">LLM 260326</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="course5.html" target="_blank">Graph RAG 260409</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="course6.html" target="_blank">Guru 260416</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="course7.html" target="_blank">SFT 260423</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="course8.html" target="_blank">GRPO 260505</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="prompt-optimizer.html" target="_blank">Prompt-Optimizer</a>
+            </div>
+        </section>
+
+                <section class="lab-card pl-10 mb-32">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">others</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-10">相關專案</h2>
+            <div class="flex flex-wrap gap-4">
+
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="prompt-optimizer.html" target="_blank">Prompt-Optimizer</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="n8n.html" target="_blank">N8N_個人知識庫</a>
+                <a class="pill rounded-full px-6 py-4 text-sm mono uppercase tracking-[0.14em] transition-all duration-300" href="face.html" target="_blank">臉部辨識打卡系統</a>
+            </div>
+        </section>
+
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]"><span>AI Rookie</span><span>Lab Index</span></footer>
+    </main>
+    <script>window.addEventListener('scroll',()=>{const h=document.documentElement.scrollHeight-document.documentElement.clientHeight;document.getElementById('scrollbar').style.width=(h?window.scrollY/h*100:0)+'%';});</script>
+</body>
+</html>

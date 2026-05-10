@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSD 功能展示</title>
+    <style>
+        /* 基礎樣式 */
+        :root {
+            --bg-color: #000000;
+            --text-color: #A0A0A0;
+            --title-color: #FFFFFF;
+            --accent-color: #0044CC;
+            --code-block-bg: #111111;
+            --feature-bg: #f8f9fa; /* 淺色卡片背景 */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 導覽列 */
+        nav {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            color: var(--accent-color);
+        }
+
+        .phase-nav-btn {
+            width: auto;
+            padding: 0 10px;
+            border: 1px solid var(--accent-color);
+            background: transparent;
+            color: var(--accent-color);
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /* 頂部 Prompt-Optimizer 區塊 */
+        .main-header {
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+            text-align: left; /* 改為靠左比較專業 */
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            color: #1a73e8;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        /* 膠囊文字區塊 */
+        .capsule-text {
+            margin-top: 20px;
+            padding: 15px 20px;
+            background: #111;
+            border-left: 3px solid #1a73e8;
+            border-radius: 4px;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+
+        .feature-item {
+            background: #111;
+            border-left: 4px solid #1a73e8;
+            margin-bottom: 10px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .feature-label {
+            font-weight: bold;
+            color: var(--title-color);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Phase 功能區塊 (修正圖片溢出重點) */
+        .phase-block {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            gap: 30px;
+            margin-bottom: 60px;
+            align-items: flex-start;
+        }
+
+        .text-panel {
+            flex: 1;
+        }
+
+        .image-panel {
+            flex: 0 0 55%; /* 佔比 55% - 放大 */
+            background-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer; /* 滑鼠指標改為手型 */
+            transition: transform 0.3s ease;
+        }
+
+        .image-panel:hover {
+            transform: scale(1.02);
+        }
+
+        /* 關鍵：修正圖片溢出 */
+        .image-panel img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+
+        /* 圖片放大遮罩 */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(26,115,232,0.5);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #fff;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        .phase-tag { color: var(--accent-color); font-size: 14px; }
+        .block-title { color: var(--accent-color); font-size: 24px; margin: 10px 0; }
+        .view-code { color: var(--accent-color); cursor: pointer; text-decoration: underline; margin-top: 10px; }
+
+        /* 逐點說明列表樣式 */
+        .point-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .point-item {
+            background: #1a1a2e;
+            border-left: 3px solid #1a73e8;
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border-radius: 4px;
+        }
+
+        .point-title {
+            color: #1a73e8;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .point-desc {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .code-block {
+            margin-top: 15px;
+            background-color: var(--code-block-bg);
+            border: 1px solid #333;
+            padding: 15px;
+            font-family: monospace;
+            display: none;
+            white-space: pre-wrap;
+            color: #00FF00; /* 程式碼改綠色更有科技感 */
+        }
+
+        /* 手機版適應 */
+        @media (max-width: 768px) {
+            .phase-block { flex-direction: column; }
+            .image-panel { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="back-btn">&larr; back</a>
+    </nav>
+
+    <div class="main-header">
+        <h1 class="main-title">Prompt-Optimizer</h1>
+        <div class="main-container">
+            <div class="input-section">
+                <div class="capsule-text">By deploying the extremely lightweight Qwen2.5-1.5B model locally as an "optimizer," this system can instantly transform users' vague and unstructured Chinese requirements into high-information-density professional English commands, thereby saving tokens.</div>
+            </div>
+        <button class="phase-nav-btn">Ollama</button>
+        <button class="phase-nav-btn">Qwen2.5-1.5B</button>
+        <button class="phase-nav-btn">Streamlit</button>
+        <button class="phase-nav-btn">Docker</button>
+        </div>
+    </div>
+
+    <div class="phase-block" id="phase-a">
+        <div class="text-panel">
+            <div class="phase-tag"></div>
+            <h2 class="block-title">Prompt Structuring</h2>
+            <ol class="point-list">
+                <li class="point-item">
+                    <strong class="point-title">Structured Transformation</strong>
+                    <span class="point-desc">Breaking down requirements into frameworks to minimize cloud model inference ambiguity</span>
+                </li>
+                <li class="point-item">
+                    <strong class="point-title">Information Density</strong>
+                    <span class="point-desc">Although information volume has increased by 20.5x, this is not redundancy; rather, it is the refinement of "vague intent" into "precise logic."</span>
+                </li>
+            </ol>
+            <div class="view-code" onclick="toggleCode('code-prompt')">
+    ─ VIEW CODE
+</div>
+
+<pre class="code-block" id="code-prompt" style="display: none; background-color: #111; color: #d1d1d1; padding: 15px; border: 1px solid #333; border-radius: 4px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.4;">
+import streamlit as st
+from openai import OpenAI
+import time
+
+st.set_page_config(page_title="Prompt Assistant(qwen2.5-1.5b)")
+
+client = OpenAI(base_url="http://localhost:11434/v1", api_key="ollama")
+
+def refine_prompt(user_input):
+    system_instruction = """
+    You are a Prompt Engineering expert. 
+    Your goal is to transform messy Chinese ideas into high-quality, precise, and structured ENGLISH prompts.
+
+    Format: 
+    - [Role]: ...
+    - [Task]: ...
+    - [Constraints]: ...
+    
+    IMPORTANT: You must output the full optimized prompt. 
+    At the end of [Constraints], always add: "Provide the response concisely, avoid unnecessary explanations, and output only the core result."
+    """
+    
+    response = client.chat.completions.create(
+        model="qwen2.5:1.5b",
+        messages=[
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": f"Optimize this requirement: {user_input}"}
+        ],
+        temperature=0.3,
+    )
+    return response.choices[0].message.content
+
+# UI 介面設計
+st.title("Prompt Assistant (Qwen2.5-1.5B)")
+st.markdown("---")
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("請輸入")
+    user_query = st.text_area("輸入內容：", height=200)
+    input_len = len(user_query)
+    st.caption(f"原始字數：{input_len}")
+
+if st.button("優化 Prompt"):
+    if user_query:
+        with st.spinner("優化中..."):
+            start_time = time.time()
+            refined = refine_prompt(user_query)
+            end_time = time.time()
+            
+            with col2:
+                st.subheader("優化後的 Prompt")
+                st.success(refined)
+                output_len = len(refined)
+                st.caption(f"優化後字數：{output_len}")
+            
+            st.markdown("---")
+            c1, c2, c3 = st.columns(3)
+            c1.metric("耗時", f"{end_time - start_time:.2f}s")
+            c2.metric("資訊增量", f"{(output_len/input_len if input_len > 0 else 0):.1f}x")
+            c3.metric("模型", "Qwen2.5-1.5B")
+            
+            st.code(refined, language="markdown") 
+    else:
+        st.warning("請輸入內容")
+</pre>
+            <pre class="code-block" id="code-a">
+void environment_init() {
+    clk_init(200); // 設置時脈
+    nand_map_init(); // 設置記憶體映射
+    printf("Init success.\n");
+}</pre>
+        </div>
+        <div class="image-panel">
+            <img src="1.png" alt="Phase A Image"> 
+        </div>
+    </div>
+
+    <div class="phase-block" id="phase-b">
+        <div class="text-panel">
+            <div class="phase-tag"></div>
+            <h2 class="block-title">Test results</h2>
+            <ol class="point-list">
+                <li class="point-item">
+                    <strong class="point-title">Cost Optimization Benchmark</strong>
+                    <span class="point-desc">Conducting stress tests via Google AI Studio (Gemini 3 Flash) to compare the resource consumption of 'original Chinese prompts' versus 'English prompts optimized by local small language models' when handling the same task.</span>
+                </li>
+                <li class="point-item">
+                    <strong class="point-title">Address Translation</strong>
+                    <span class="point-desc">Efficient logical address to physical address translation for SSD storage management.</span>
+                </li>
+            </ol>
+            <div class="view-code" onclick="toggleCode('code-b')">
+    
+</div>
+
+<pre class="code-block" id="code-b" style="display: none; background-color: #111; color: #d1d1d1; padding: 15px; border: 1px solid #333; border-radius: 4px; overflow-x: auto; font-family: 'Courier New', Courier, monospace; line-height: 1.4;">
+// L2P Table Mapping Implementation
+typedef struct {
+    uint32_t lba_start;
+    uint32_t lba_end;
+    uint32_t pba_start;
+} l2p_entry_t;
+
+int get_physical_address(int logical_addr) {
+    return map_lookup(logical_addr);
+}</pre>
+        </div>
+        <div class="image-panel" onclick="openLightbox('2.png')">
+            <img src="2.png" alt="Phase B Image">
+        </div>
+    </div>
+
+    <div class="phase-block" id="phase-c">
+        <div class="text-panel">
+            <div class="phase-tag"></div>
+            <h2 class="block-title">advantages</h2>
+            <ol class="point-list">
+                <li class="point-item">
+                    <strong class="point-title">Low Barrier to Entry</strong>
+                    <span class="point-desc">By utilizing a highly-optimized 1.5B parameter model, even users with older computers or integrated graphics can run this locally via Ollama.</span>
+                </li>
+                <li class="point-item">
+                    <strong class="point-title">Cost-Efficient Bridge</strong>
+                    <span class="point-desc">It serves as a "pre-filter" that refines messy input before sending it to expensive cloud providers like Claude or Gemini.</span>
+                </li>
+            </ol>
+        </div>
+        <div class="image-panel" onclick="openLightbox('3.png')">
+            <img src="33.png" alt="Phase C Image">
+        </div>
+    </div>
+
+    <script>
+        function toggleCode(codeId) {
+            var codeBlock = document.getElementById(codeId);
+            codeBlock.style.display = (codeBlock.style.display === "block") ? "none" : "block";
+        }
+
+        // 圖片放大功能
+        function openLightbox(src) {
+            var lightbox = document.getElementById('lightbox');
+            var lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            var lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+        }
+    </script>
+
+    <!-- 圖片放大遮罩 -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Enlarged Image">
+    </div>
+
+</body>
+</html>

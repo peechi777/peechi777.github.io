@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實驗紀錄 | SFT_260423</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+            body { 
+                /* 1. 改這行：確保中文使用無襯線體 */
+                font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+                background-color: #000000;
+                color: #94a3b8; /* 2. 改這行：文字顏色調成圖片中的灰白色 */
+                line-height: 1.7;
+            }
+            h1, h2, h3 { 
+                /* 3. 改這行：讓標題使用圖片中的襯線體 (Serif) */
+                font-family: 'Noto Serif TC', serif; 
+                font-weight: 900;
+            }
+            .mono { font-family: 'JetBrains Mono', monospace; }
+        /* 側邊標記線 */
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all 0.5s ease;
+        }
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        /* 程式碼區塊摺疊動畫 */
+        .expand-enter-active, .expand-leave-active {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+        .expand-enter-from, .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* 隱藏預設滾動條但保留功能 */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: 0.85rem !important;
+            background: #373737 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <h1 class="text-4xl font-black text-blue-800 mb-6 tracking-tight">{{ labTitle }}</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose whitespace-pre-line">
+                    {{ labDescription }}
+                </p>
+            </div>
+        </header>
+
+        <div class="space-y-40">
+<section v-for="(item, index) in experiments" :key="index" class="lab-card pl-10">
+    <div class="max-w-3xl"> <div class="mb-6">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+            <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+        </div>
+        
+        <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">
+            {{ item.content }}
+        </p>
+
+        <div class="relative">
+            <button 
+                @click="toggleCode(index)"
+                class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+            >
+                <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                {{ item.showCode ? 'Close Code' : 'View Code' }}
+                <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <transition name="expand" @after-enter="refreshPrism">
+                <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                        </div>
+                    </div>
+                    <pre class="language-cpp"><code>{{ item.code }}</code></pre>
+                </div>
+            </transition>
+        </div>
+    </div>
+</section>
+        </div>
+        
+        <div class="mt-40 flex justify-center">
+            <a :href="githubUrl" target="_blank" 
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- GitHub Icon -->
+                <svg class="w-6 h-6 fill-current z-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.82 1.102.82 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">查看詳細</span>
+                
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span></span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const githubUrl = ref("https://github.com/peechi777/0423_SFT/tree/main"); // 在這裡更換您的網址
+            const labTitle = ref("Function Calling 監督式微調(LoRA SFT + FastAPI 部署）");
+            const labDescription = ref(`Function Calling（工具呼叫） 的 SFT（監督式微調）工作坊，目標是讓開源 LLM 學會輸出結構化的 tool_call JSON，最終部署成可用的訂單客服 Agent。
+Lab 1｜Function Calling 入門：設計 JSON Schema 工具定義，實作「User 輸入 → LLM 判斷是否呼叫工具 → 執行工具 → 餵回結果 → 生成最終回覆」的完整互動流程。
+Lab 2｜測試集與指標設計：建立評估框架，實作 tool_selection_correct()（工具選對與否）、args_exact_match()（參數完全相符與否）、run_one()（單案例 LLM 推論與 JSON 格式驗證）三個關鍵函式。
+Lab 3｜建立 SFT 資料：用 LLM 兩階段自動生成訓練資料——先生成符合 Schema 的 arguments，再反推自然的 User query，輸出 [system, user, assistant(tool_call)] 對話三元組。
+Lab 4｜SFT 微調：用 LoRA（r=16, alpha=32）高效微調開源模型，包含訓練（載入資料、套用 chat_template、SFTTrainer 訓練、儲存 Adapter）與推理（載入基礎模型 + Adapter 測試效果）兩部分。
+Lab 5｜部署 Agent：用 FastAPI 包裝成 HTTP API 服務（含自動工具執行與重試防呆機制），並建立回歸測試腳本批量驗證工具選擇準確率與參數正確率，輸出 JSON 報告。
+`);
+
+            const experiments = ref([
+                { 
+        title: "Function Calling 入門", 
+        content: `1.設計符合 JSON Schema 的工具定義
+2.實作 LLM → 工具呼叫 → 執行 → 回覆 的完整流程`,  
+    code: `def main():
+    """
+    主函式：實作互動式聊天迴圈
+    
+    流程說明：
+    ┌─────────────────────────────────────────────────────────────────┐
+    │  1. 建立對話歷史（包含 system prompt）                           │
+    │  2. 進入主迴圈：                                                 │
+    │     a. 讀取使用者輸入                                           │
+    │     b. 呼叫 LLM 生成回應                                        │
+    │     c. 判斷是否為工具呼叫                                       │
+    │        - 是 → 執行工具 → 餵回結果 → 生成最終回覆                │
+    │        - 否 → 直接顯示回應                                      │
+    └─────────────────────────────────────────────────────────────────┘
+    """
+
+    print("LAB1: Function Calling 基礎（輸入 exit 離開）")
+    print("=" * 50)
+    print("提示：試試輸入「幫我查訂單 A123456789 狀態」")
+    print("=" * 50)
+    
+    while True:
+        user = input("\nUser> ").strip()
+        
+        if user.lower() in ("exit", "quit"):
+            print("掰掰！")
+            break
+        
+        if not user:
+            continue
+        messages.append(
+            {
+                "role": "user", 
+                "content": user
+            }
+        )
+        
+        if tool_call:
+            name = tool_call.get("name")    # 例如 "get_order_status"
+            args = tool_call.get("arguments", {})  # 例如 {"order_id": "A123456789"}
+            
+            if name not in TOOL_REGISTRY:
+                print("\nAssistant> （工具不存在，請再試一次）")
+                continue
+            
+            print("\n[TOOL CALL]", name, pretty(args))
+            
+            tool_fn = TOOL_REGISTRY[name]
+            
+            result = tool_fn(**args)
+            
+            print("\n[TOOL RESULT]", pretty(result))
+            print("\nAssistant>", final)
+            
+        else:
+        
+            messages.append({"role": "assistant", "content": out})
+            
+            print("\nAssistant>", out)`, 
+        showCode: false 
+    },
+                { title: "測試集與指標設計", content: `1.驗證 tool_call 格式
+2.評估指標函式
+3.單一案例執行 LLM 推論`,  
+    code: `#1
+def tool_selection_correct(pred_tool: str | None, expect: dict) -> bool:
+    """
+    判斷工具選擇是否正確
+
+    判斷邏輯：
+      - expect 有 "tool" → 比對 pred_tool 是否等於 expect["tool"]
+      - expect 沒有 "tool" → pred_tool 應該是 None（不呼叫任何工具）
+
+    Args:
+        pred_tool: LLM 預測的工具名稱（或 None）
+        expect:    測試案例的 expect 欄位
+
+    Returns:
+        True 表示選擇正確
+
+    範例：
+        tool_selection_correct("get_order_status", {"tool": "get_order_status"}) → True
+        tool_selection_correct(None, {"should_ask_clarification": True})         → True
+        tool_selection_correct("track_shipment", {"tool": "get_order_status"})   → False
+    """
+    # -------------------------------------------------------------------------
+    # TODO 1：實作工具選擇正確性判斷
+    #
+    # 提示：
+    #   if "tool" in expect:
+    #       ...（比對工具名稱）
+    #   ...（沒有 "tool" 時，pred_tool 應為 None）
+    # -------------------------------------------------------------------------
+    raise NotImplementedError("TODO 1：請實作 tool_selection_correct")
+
+#2
+def args_exact_match(pred_args: dict | None, expect: dict) -> bool:
+    """
+    判斷預測的參數是否與期望完全相符
+
+    判斷邏輯：
+      - expect 有 "arguments" → 直接比對 pred_args == expect["arguments"]
+      - expect 沒有 "arguments" → pred_args 應該是 None
+
+    Args:
+        pred_args: LLM 預測的參數字典（或 None）
+        expect:    測試案例的 expect 欄位
+
+    Returns:
+        True 表示參數完全相符
+
+    範例：
+        args_exact_match({"order_id": "A123456789"}, {"arguments": {"order_id": "A123456789"}}) → True
+        args_exact_match({"order_id": "A999999999"}, {"arguments": {"order_id": "A123456789"}}) → False
+    """
+    # -------------------------------------------------------------------------
+    # TODO 2：實作參數完全相符判斷
+    #
+    # 提示：
+    #   if "arguments" not in expect:
+    #       ...（沒有預期參數，pred_args 應為 None）
+    #   ...（有預期參數，直接比對）
+    # -------------------------------------------------------------------------
+    raise NotImplementedError("TODO 2：請實作 args_exact_match")
+
+#3
+def run_one(case: dict) -> dict:
+    """
+    對單一測試案例執行 LLM 推論，回傳預測結果
+
+    流程：
+      1. 組合 messages（system prompt + 測試案例的 messages）
+      2. 呼叫 LLM
+      3. 提取 JSON（tool_call）
+      4. 驗證格式
+
+    Returns:
+        {
+            "raw":       str,        # LLM 原始輸出（供除錯用）
+            "tool":      str | None, # 預測的工具名稱
+            "arguments": dict | None,# 預測的參數
+            "valid":     bool,       # tool_call 格式是否合法
+            "error":     str | None  # 驗證錯誤訊息
+        }
+    """
+    messages = [{"role": "system", "content": system_prompt()}] + case["messages"]
+    out = call_llm(messages)
+
+    pred = {
+        "raw": out,
+        "tool": None,
+        "arguments": None,
+        "valid": False,
+        "error": None,
+    }
+
+    # -------------------------------------------------------------------------
+    # TODO 3：從 LLM 輸出中提取 JSON，並處理解析失敗的情況
+    #
+    # LLM 有可能輸出格式破損的 JSON（例如少了括號、多了說明文字），
+    # 這時 extract_json_block 會回傳 None，應視為「無法解析」。
+    #
+    # 請用 try/except 包住提取與驗證邏輯：
+    #
+    #   try:
+    #       tool_call = extract_json_block(out)
+    #       if tool_call is None:
+    #           return pred   # LLM 沒有輸出 JSON（追問或直接回答，屬正常情況）
+    #       ok, err = validate_tool_call(tool_call)
+    #       pred["tool"]      = tool_call.get("name")
+    #       pred["arguments"] = tool_call.get("arguments")
+    #       pred["valid"]     = ok
+    #       pred["error"]     = err
+    #   except Exception as e:
+    #       pred["error"] = f"json_parse_error:{e}"
+    # -------------------------------------------------------------------------
+    raise NotImplementedError("TODO 3：請加入 try/except 處理 JSON 提取與解析失敗")
+
+    return pred
+`, 
+        showCode: false , showCode: false },
+                { title: "建立 SFT 資料", content: `1.產出符合 schema 的 tool_call
+                2.把 tool_call 餵給 LLM 產出對應的自然 user query`,  
+    code: `def _validate_args(args: dict, tool_def: dict) -> tuple[bool, str | None]:
+    if not isinstance(args, dict):
+        return False, "args_not_dict"
+    try:
+        jsonschema_validate(instance=args, schema=tool_def["parameters"])
+    except ValidationError as e:
+        return False, e.message
+    return True, None
+
+
+def generate_args(tool_def: dict, max_retries: int = 3) -> dict | None:
+    """Step 1：用 LLM 生成符合 schema 的 args，最多重試 max_retries 次。"""
+    messages = _build_args_prompt(tool_def)
+    for attempt in range(max_retries):
+        try:
+            raw = llm(messages, temperature=0.9, top_p=0.95)
+            obj = _extract_first_json(raw)
+            if obj is None:
+                continue
+            ok, _ = _validate_args(obj, tool_def)
+            if ok:
+                return obj
+        except requests.RequestException:
+            time.sleep(1)
+    return None
+
+
+def generate_user_query(tool_call_obj: dict) -> str | None:
+    """Step 2：給定 tool_call，用 LLM 反推自然 user query。"""
+    messages = _build_query_prompt(tool_call_obj)
+    try:
+        text = llm(messages, temperature=1.0, top_p=0.95).strip()
+        text = text.strip("「」\"' \n\t")
+        return text or None
+    except requests.RequestException:
+        return None
+
+
+# ==============================================================================
+# 輔助：tool_call 字串、system prompt
+# ==============================================================================
+
+def tool_call(name: str, arguments: dict) -> str:
+    """生成 assistant 應輸出的 tool_call JSON 字串。"""
+    return json.dumps(
+        {"type": "tool_call", "name": name, "arguments": arguments},
+        ensure_ascii=False,
+    )
+
+
+def get_system_prompt() -> str:
+    """訓練資料的 system prompt（含工具清單）。"""
+    return "你是訂單客服助理。可用工具：" + json.dumps(TOOLS, ensure_ascii=False)
+
+
+# ==============================================================================
+# 組單筆訓練範例（兩階段 + 失敗重試）
+# ==============================================================================
+
+def make_example(tool_def: dict) -> dict | None:
+    """
+    給定一個 tool，跑兩階段生成；任何一階段失敗回傳 None。
+
+    Returns:
+        {"messages": [system, user, assistant tool_call]} 或 None
+    """
+    args = generate_args(tool_def)
+    if args is None:
+        return None
+
+    tool_call_obj = {"type": "tool_call", "name": tool_def["name"], "arguments": args}
+    user_text = generate_user_query(tool_call_obj)
+    if not user_text:
+        return None
+
+    return {
+        "messages": [
+            {"role": "system", "content": get_system_prompt()},
+            {"role": "user", "content": user_text},
+            {"role": "assistant", "content": tool_call(tool_def["name"], args)},
+        ]
+    }`, 
+        showCode: false , showCode: false },
+
+        { 
+        title: "SFT 微調一個可輸出 tool call 的模型", 
+        content: `
+        1.使用 LoRA (Low-Rank Adaptation) 微調語言模型
+        2.載入訓練好的 LoRA Adapter，測試微調後的模型效果。`,  
+    code: `#1
+def main():
+    """
+    主函式：執行 LoRA 訓練
+    
+    流程：
+    ┌─────────────────────────────────────────────────────────────────┐
+    │  1. 載入資料集（JSON → HuggingFace Dataset）                     │
+    │  2. 載入 Tokenizer 和基礎模型                                    │
+    │  3. 用 chat_template 把 messages 轉成訓練用的 text              │
+    │  4. 設定 LoRA 配置（秩、目標層等）                               │
+    │  5. 設定訓練參數（學習率、batch size 等）                        │
+    │  6. 建立 SFTTrainer 並開始訓練                                   │
+    │  7. 儲存 Adapter 權重                                           │
+    └─────────────────────────────────────────────────────────────────┘
+    """
+    
+    print("=" * 60)
+    print("LAB4: LoRA 微調訓練")
+    print("=" * 60)
+    print(f"基礎模型：{MODEL_NAME}")
+    print(f"訓練資料：{TRAIN_PATH}")
+    print(f"輸出目錄：{OUT_DIR}")
+    print("=" * 60)
+    
+    # ==========================================================================
+    # Step 1: 載入資料集
+    # ==========================================================================
+    # load_dataset("json", ...) 支援兩種 JSON 格式：
+    #   - JSON Lines（每行一個物件）
+    #   - JSON array（整份檔案是一個 [ {...}, {...} ] 陣列）← 本 Lab 用這種
+    print("\n[Step 1] 載入資料集...")
+
+    ds = load_dataset(
+        "json",
+        data_files={
+            "train": TRAIN_PATH,
+            "validation": VALID_PATH,
+        },
+    )
+
+    print(f"  訓練集：{len(ds['train'])} 筆")
+    print(f"  驗證集：{len(ds['validation'])} 筆")
+
+    # ==========================================================================
+    # Step 2: 載入 Tokenizer 和模型
+    # ==========================================================================
+    print("\n[Step 2] 載入 Tokenizer 和模型...")
+    
+    # 載入 Tokenizer
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=True)
+    
+    # 設定 padding token
+    # 有些模型沒有 pad_token，需要手動設定
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+        print("  注意：設定 pad_token = eos_token")
+
+    # 載入基礎模型
+    # torch_dtype=torch.bfloat16：使用 bf16 精度，減少記憶體使用
+    # device_map="auto"：自動分配到可用的 GPU
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_NAME,
+        torch_dtype=torch.bfloat16,  # 或 torch.float16
+        device_map="auto",
+    )
+    
+    print(f"  模型已載入到：{model.device}")
+
+    # ==========================================================================
+    # Step 3: 把 messages 轉成訓練用的 text
+    # ==========================================================================
+    # Lab3 輸出的是 messages 格式（list of {role, content}），
+    # 這裡用模型自帶的 chat_template 把它拼成一整段 text 字串，
+    # 之後交給 SFTTrainer 的 dataset_text_field="text" 使用。
+    print("\n[Step 3] 套用 chat_template 轉成 text 欄位...")
+
+    def format_example(example):
+        text = tokenizer.apply_chat_template(
+            example["messages"],
+            tokenize=False,
+            add_generation_prompt=False,
+        )
+        return {"text": text}
+
+    ds = ds.map(format_example, remove_columns=["messages"])
+    print(f"  範例 text 片段：{ds['train'][0]['text'][:80]}...")
+
+    # ==========================================================================
+    # Step 4: 設定 LoRA 配置
+    # ==========================================================================
+    # LoRA 的關鍵超參數說明：
+    #
+    # r (rank)：低秩矩陣的秩
+    #   - 越大 → Adapter 越大 → 表達能力越強 → 記憶體越多
+    #   - 建議範圍：8-64
+    #
+    # lora_alpha：縮放係數
+    #   - 影響 Adapter 的更新幅度
+    #   - 通常設為 2*r
+    #
+    # lora_dropout：Dropout 機率
+    #   - 防止過擬合
+    #   - 建議：0.05-0.1
+    #
+    # target_modules：要加 Adapter 的層
+    #   - 通常選 attention 的 projection 層
+    #   - q_proj, k_proj, v_proj, o_proj 是常見選擇
+    
+    print("\n[Step 4] 設定 LoRA 配置...")
+    
+    lora_config = LoraConfig(
+        r=16,                   # 秩：16 是常用的起始值
+        lora_alpha=32,          # 縮放係數：通常 2*r
+        lora_dropout=0.05,      # Dropout
+        bias="none",            # 不訓練 bias（減少參數）
+        task_type="CAUSAL_LM",  # 任務類型：因果語言模型
+        target_modules=[        # 目標層：Attention 的各個 projection
+            "q_proj",           # Query projection
+            "k_proj",           # Key projection
+            "v_proj",           # Value projection
+            "o_proj",           # Output projection
+        ],
+    )
+    
+    print(f"  LoRA rank: {lora_config.r}")
+    print(f"  LoRA alpha: {lora_config.lora_alpha}")
+    print(f"  Target modules: {lora_config.target_modules}")
+    
+    # ==========================================================================
+    # Step 5: 設定訓練參數
+    # ==========================================================================
+    # TrainingArguments 包含所有訓練相關的設定
+    #
+    # 關鍵參數說明：
+    # - num_train_epochs：訓練幾個 epoch
+    # - per_device_train_batch_size：每個 GPU 的 batch size
+    # - gradient_accumulation_steps：梯度累積（等效放大 batch size）
+    # - learning_rate：學習率（LoRA 通常用較大的學習率）
+    # - warmup_ratio：學習率預熱比例
+    # - bf16：使用 bf16 精度
+    
+    print("\n[Step 5] 設定訓練參數...")
+    
+    training_args = SFTConfig(
+        output_dir=OUT_DIR,
+        
+        # 訓練設定
+        num_train_epochs=3,                 # 訓練 2 個 epoch
+        per_device_train_batch_size=1,      # 每 GPU batch size（根據記憶體調整）
+        per_device_eval_batch_size=1,       # 評估 batch size
+        gradient_accumulation_steps=16,      # 梯度累積 16 步 
+        max_length=6144,
+        
+        # 學習率設定
+        learning_rate=2e-4,                 # LoRA 常用較大學習率
+        warmup_ratio=0.03,                  # 3% 的步數用於預熱
+        max_grad_norm=1.0,                  # 梯度裁剪
+        
+        # 日誌和儲存
+        logging_steps=1,                   # 每 1 步記錄一次
+        # eval_strategy="epoch",        # 按步數評估
+        save_strategy="epoch",
+        
+        # 精度和優化
+        bf16=True,                          # 使用 bf16（需要支援的 GPU）
+        optim="adamw_torch",                # 優化器
+        
+        # 其他
+        report_to="none",                   # 不回報到 wandb 等平台
+    )
+    
+    print(f"  Epochs: {training_args.num_train_epochs}")
+    print(f"  Batch size: {training_args.per_device_train_batch_size}")
+    print(f"  Learning rate: {training_args.learning_rate}")
+    
+    # ==========================================================================
+    # Step 6: 建立 SFTTrainer 並開始訓練
+    # ==========================================================================
+    # SFTTrainer 是 TRL 提供的監督式微調訓練器
+    # 它會自動處理：
+    # - 資料 tokenization
+    # - LoRA 的初始化和訓練
+    # - 訓練迴圈
+    
+    print("\n[Step 6] 建立 Trainer 並開始訓練...")
+    
+    trainer = SFTTrainer(
+        model=model,
+        train_dataset=ds["train"],
+        # eval_dataset=ds["validation"],
+        peft_config=lora_config,            # LoRA 配置
+        args=training_args,
+    )
+    
+    # 開始訓練！
+    print("\n開始訓練...")
+    print("-" * 40)
+    
+    trainer.train()
+    
+    print("-" * 40)
+    print("訓練完成！")
+    
+    # ==========================================================================
+    # Step 7: 儲存 Adapter 權重
+    # ==========================================================================
+    print("\n[Step 7] 儲存 Adapter...")
+    
+    # 儲存 LoRA Adapter
+    trainer.save_model(OUT_DIR)
+    
+    # 儲存 Tokenizer（推論時需要）
+    tokenizer.save_pretrained(OUT_DIR)
+    
+    print(f"  Adapter 已儲存到：{OUT_DIR}")
+    
+    # 顯示儲存的檔案
+    import os
+    files = os.listdir(OUT_DIR)
+    print(f"  檔案清單：")
+    for f in files:
+        print(f"    - {f}")
+    
+    print("\n" + "=" * 60)
+    print("訓練完成！")
+    print("下一步：使用 python -m lab4.infer_adapter 測試模型")
+    print("=" * 60)
+
+#2
+def generate(prompt: str, use_adapter: bool = True) -> str:
+    """
+    使用模型生成回應
+    
+    Args:
+        prompt: 輸入的提示詞
+        use_adapter: 是否載入 LoRA Adapter
+                     True = 使用微調後的模型
+                     False = 使用原始模型（用於比較）
+    
+    Returns:
+        模型生成的文字
+    
+    Example:
+        >>> prompt = "<|system|>\n你是客服助理\n<|user|>\n查訂單 A123\n<|assistant|>\n"
+        >>> output = generate(prompt, use_adapter=True)
+        >>> print(output)
+    """
+    
+    # ==========================================================================
+    # Step 1: 載入 Tokenizer
+    # ==========================================================================
+    print("載入 Tokenizer...")
+    
+    tok = AutoTokenizer.from_pretrained(BASE_MODEL, use_fast=True)
+    
+    # 設定 padding token
+    if tok.pad_token is None:
+        tok.pad_token = tok.eos_token
+    
+    # ==========================================================================
+    # Step 2: 載入基礎模型
+    # ==========================================================================
+    print("載入基礎模型...")
+    
+    base = AutoModelForCausalLM.from_pretrained(
+        BASE_MODEL,
+        torch_dtype=torch.bfloat16,
+        device_map="auto",
+    )
+    
+    # ==========================================================================
+    # Step 3: 載入 LoRA Adapter（如果需要）
+    # ==========================================================================
+    if use_adapter:
+        print(f"載入 LoRA Adapter: {ADAPTER_DIR}")
+        
+        # PeftModel.from_pretrained() 會將 Adapter 疊加到基礎模型上
+        # 數學上：W' = W + BA（原始權重 + Adapter）
+        model = PeftModel.from_pretrained(base, ADAPTER_DIR)
+    else:
+        print("使用原始模型（不載入 Adapter）")
+        model = base
+    
+    # 設定為評估模式
+    model.eval()
+    
+    # ==========================================================================
+    # Step 4: 生成回應
+    # ==========================================================================
+    print("生成回應...")
+    
+    # Tokenize 輸入
+    inputs = tok(prompt, return_tensors="pt").to(model.device)
+    
+    # 生成
+    with torch.no_grad():
+        out = model.generate(
+            **inputs,
+            max_new_tokens=200,     # 最多生成 200 個 token
+            do_sample=False,        # 不使用取樣（確定性輸出）
+            # 如果要加入隨機性，可以改成：
+            # do_sample=True,
+            # temperature=0.7,
+            # top_p=0.9,
+        )
+    
+    # 解碼輸出
+    return tok.decode(out[0], skip_special_tokens=True)`, 
+        showCode: false 
+    },
+            { 
+        title: "部署成可用的 Agent", 
+        content: `1.FastAPI 服務 - Function Calling Agent HTTP API
+2.回歸測試腳本
+`,  
+    code: `#1
+def chat(req: ChatReq):
+    """
+    聊天端點 - 處理使用者訊息並可能呼叫工具
+    
+    流程：
+    ┌─────────────────────────────────────────────────────────────────┐
+    │  1. 組合 system prompt + 使用者訊息                              │
+    │  2. 呼叫 LLM 生成回應                                           │
+    │  3. 檢查是否為 tool_call                                        │
+    │     - 否 → 直接回傳                                             │
+    │     - 是 → 驗證 → 重試（如果需要）→ 執行工具 → 生成最終回覆       │
+    │  4. 回傳結果 + trace                                            │
+    └─────────────────────────────────────────────────────────────────┘
+    
+    Args:
+        req: 包含 messages 的請求物件
+        
+    Returns:
+        ChatResp: 包含更新後的 messages 和 trace
+    """
+    
+    # 記錄開始時間（用於計算延遲）
+    start_time = time.time()
+    
+    # ==========================================================================
+    # Step 1: 組合對話歷史
+    # ==========================================================================
+    # 加入 system prompt（定義角色和可用工具）
+    # req.messages 是使用者傳入的對話歷史
+    messages = [{"role": "system", "content": system_prompt()}] + req.messages
+    
+    # 初始化 trace（觀測資訊）
+    # trace 記錄每個步驟的結果，方便除錯和監控
+    trace = {
+        "steps": [],
+        "start_time": start_time,
+    }
+    
+    # ==========================================================================
+    # Step 2: 呼叫 LLM
+    # ==========================================================================
+    out = call_llm(messages)
+    trace["steps"].append({"model_out": out})
+    
+    # 嘗試提取 tool_call JSON
+    tool_call = extract_json_block(out)
+    
+    # ==========================================================================
+    # Step 3a: 沒有 tool_call → 直接回傳
+    # ==========================================================================
+    if not tool_call:
+        messages.append({"role": "assistant", "content": out})
+        trace["latency_ms"] = int((time.time() - start_time) * 1000)
+        return {"messages": messages, "trace": trace}
+    
+    # ==========================================================================
+    # Step 3b: 有 tool_call → 驗證
+    # ==========================================================================
+    ok, err = validate_tool_call(tool_call)
+    
+    if not ok:
+        # ------------------------------------------------------------------
+        # 驗證失敗 → 重試機制
+        # ------------------------------------------------------------------
+        # 這是重要的防呆機制！
+        # LLM 可能輸出格式錯誤的 JSON，我們給它一次重試機會
+        
+        trace["steps"].append({"validation_error": err})
+        
+        # 告訴 LLM 它的輸出不合法
+        messages.append({"role": "assistant", "content": out})
+        messages.append({
+            "role": "user", 
+            "content": f"你的 tool_call 不合法：{err}。請只輸出合法 JSON。"
+        })
+        
+        # 重試
+        out2 = call_llm(messages)
+        trace["steps"].append({"retry_out": out2})
+        
+        tool_call = extract_json_block(out2)
+        
+        if not tool_call:
+            # 重試後仍無法解析 JSON → 放棄
+            messages.append({"role": "assistant", "content": out2})
+            trace["latency_ms"] = int((time.time() - start_time) * 1000)
+            return {"messages": messages, "trace": trace}
+        
+        # 再次驗證
+        ok, err = validate_tool_call(tool_call)
+        if not ok:
+            # 重試後仍不合法 → 放棄
+            messages.append({"role": "assistant", "content": out2})
+            trace["error"] = err
+            trace["latency_ms"] = int((time.time() - start_time) * 1000)
+            return {"messages": messages, "trace": trace}
+    
+    # ==========================================================================
+    # Step 4: 執行工具
+    # ==========================================================================
+    name = tool_call["name"]
+    args = tool_call["arguments"]
+    
+    trace["steps"].append({"tool_call": tool_call})
+    
+    # 執行工具函式
+    # 在生產環境中，這裡應該加入：
+    # - 超時控制
+    # - 錯誤處理
+    # - 權限檢查
+    try:
+        result = TOOL_REGISTRY[name](**args)
+        trace["steps"].append({"tool_result": result})
+    except Exception as e:
+        # 工具執行失敗
+        trace["steps"].append({"tool_error": str(e)})
+        result = {"ok": False, "error": str(e)}
+    
+    # ==========================================================================
+    # Step 5: 餵回工具結果，生成最終回覆
+    # ==========================================================================
+    messages.append({"role": "assistant", "content": pretty(tool_call)})
+    messages.append({"role": "user", "content": tool_result_message(name, result)})
+    
+    final = call_llm(messages)
+    messages.append({"role": "assistant", "content": final})
+    trace["steps"].append({"final": final})
+    
+    # ==========================================================================
+    # 回傳結果
+    # ==========================================================================
+    trace["latency_ms"] = int((time.time() - start_time) * 1000)
+    
+    return {"messages": messages, "trace": trace}
+
+#2
+def main():
+    """
+    主函式：執行回歸測試
+    
+    流程：
+    1. 檢查 API 是否可用
+    2. 載入測試案例
+    3. 對每個案例呼叫 API
+    4. 收集結果
+    5. 分析並輸出報告
+    """
+    
+    print("=" * 60)
+    print("LAB5: 回歸測試")
+    print("=" * 60)
+    
+    # ==========================================================================
+    # Step 1: 檢查 API 是否可用
+    # ==========================================================================
+    print("\n[Step 1] 檢查 API...")
+    
+    try:
+        resp = requests.get("http://localhost:9000/health", timeout=5)
+        resp.raise_for_status()
+        health = resp.json()
+        print(f"  API 狀態：{health.get('status')}")
+    except Exception as e:
+        print(f"  錯誤：無法連接到 API - {e}")
+        print("  請確保服務運行中：uvicorn lab5.app:app --port 9000")
+        return
+    
+    # ==========================================================================
+    # Step 2: 載入測試案例
+    # ==========================================================================
+    print("\n[Step 2] 載入測試案例...")
+    
+    if not Path(EVAL_CASES_PATH).exists():
+        print(f"  錯誤：找不到 {EVAL_CASES_PATH}")
+        return
+    
+    cases = load_test_cases(EVAL_CASES_PATH)
+    print(f"  載入 {len(cases)} 個測試案例")
+    
+    # ==========================================================================
+    # Step 3: 執行測試
+    # ==========================================================================
+    print("\n[Step 3] 執行測試...")
+    
+    results = []
+    
+    for i, case in enumerate(cases, 1):
+        print(f"  [{i}/{len(cases)}] {case['id']}...", end=" ")
+        
+        start = time.time()
+        result = run_test_case(case)
+        elapsed = time.time() - start
+        
+        if result["success"]:
+            print(f"✓ ({elapsed:.1f}s)")
+        else:
+            print(f"✗ ({result['error']})")
+        
+        results.append(result)
+    
+    # ==========================================================================
+    # Step 4: 分析結果
+    # ==========================================================================
+    print("\n[Step 4] 分析結果...")
+    
+    analysis = analyze_results(results, cases)
+    
+    print(f"\n  總案例數：{analysis['total']}")
+    print(f"  成功率：{analysis['success_rate']:.1%}")
+    print(f"  工具選擇準確率：{analysis['tool_accuracy']:.1%}")
+    
+    # ==========================================================================
+    # Step 5: 輸出報告
+    # ==========================================================================
+    print("\n[Step 5] 輸出報告...")
+    
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    
+    output_path = OUTPUT_DIR / "regression_trace.json"
+    
+    report = {
+        "timestamp": time.time(),
+        "analysis": analysis,
+        "results": results,
+    }
+    
+    output_path.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+    
+    print(f"  報告已輸出：{output_path}")
+    
+    # ==========================================================================
+    # 顯示失敗案例
+    # ==========================================================================
+    failed = [r for r in results if not r["success"]]
+    
+    if failed:
+        print(f"\n失敗案例 ({len(failed)} 個)：")
+        for r in failed[:5]:
+            print(f"  - {r['id']}: {r['error']}")
+        if len(failed) > 5:
+            print(f"  ... 還有 {len(failed) - 5} 個")
+    
+    print("\n" + "=" * 60)
+    print("回歸測試完成！")
+    print("=" * 60)`, 
+        showCode: false 
+    },
+
+        
+            ]);
+
+            const toggleCode = (index) => {
+                experiments.value[index].showCode = !experiments.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labTitle, labDescription, experiments, scrollPercent, githubUrl, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

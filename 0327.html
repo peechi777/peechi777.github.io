@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實驗紀錄 | Transformer_260327</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+            body { 
+                /* 1. 改這行：確保中文使用無襯線體 */
+                font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+                background-color: #000000;
+                color: #94a3b8; /* 2. 改這行：文字顏色調成圖片中的灰白色 */
+                line-height: 1.7;
+            }
+            h1, h2, h3 { 
+                /* 3. 改這行：讓標題使用圖片中的襯線體 (Serif) */
+                font-family: 'Noto Serif TC', serif; 
+                font-weight: 900;
+            }
+            .mono { font-family: 'JetBrains Mono', monospace; }
+        /* 側邊標記線 */
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all 0.5s ease;
+        }
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        /* 程式碼區塊摺疊動畫 */
+        .expand-enter-active, .expand-leave-active {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+        .expand-enter-from, .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        /* 隱藏預設滾動條但保留功能 */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: 0.85rem !important;
+            background: #373737 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <h1 class="text-4xl font-black text-blue-800 mb-6 tracking-tight">{{ labTitle }}</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose whitespace-pre-line">
+                    {{ labDescription }}
+                </p>
+            </div>
+        </header>
+
+        <div class="space-y-40">
+<section v-for="(item, index) in experiments" :key="index" class="lab-card pl-10">
+    <div class="max-w-3xl"> <div class="mb-6">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+            <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+        </div>
+        
+        <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">
+            {{ item.content }}
+        </p>
+
+        <div class="relative">
+            <button 
+                @click="toggleCode(index)"
+                class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+            >
+                <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                {{ item.showCode ? 'Close Code' : 'View Code' }}
+                <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <transition name="expand" @after-enter="refreshPrism">
+                <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                        </div>
+                    </div>
+                    <pre class="language-cpp"><code>{{ item.code }}</code></pre>
+                </div>
+            </transition>
+        </div>
+    </div>
+</section>
+        </div>
+        
+        <div class="mt-40 flex justify-center">
+            <a :href="githubUrl" target="_blank" 
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- GitHub Icon -->
+                <svg class="w-6 h-6 fill-current z-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.82 1.102.82 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">查看詳細</span>
+                
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span></span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const githubUrl = ref("https://github.com/peechi777/ai-rookie/tree/main/032627_tsai/0327_transformer"); // 在這裡更換您的網址
+            const labTitle = ref(" GPT / Transformer 原理實驗");
+            const labDescription = ref(`• 本專案將透過一系列 Python 實作練習，深入理解 GPT 與 Transformer 的核心概念與技術細節，包括自注意力機制、位置編碼、Transformer 架構的運作機制與效能優化策略。`);
+
+            const experiments = ref([
+                { 
+        title: "Position Embedding", 
+        content: `• 1.用 sin/cos 建立位置編碼，視覺化位置相似度
+• 2.說明 Transformer 如何知道 token 在第幾個位置。`,  
+    code: `import torch
+import matplotlib.pyplot as plt
+import numpy as np
+
+def get_sinusoidal_embeddings(n_pos, d_model):
+    """
+    n_pos: 序列長度 (Max sequence length)
+    d_model: 嵌入維度
+    """
+    position = torch.arange(n_pos, dtype=torch.float).unsqueeze(1)
+
+    div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-np.log(10000.0) / d_model))
+    
+    pe = torch.zeros(n_pos, d_model)
+    
+    # 偶數(0, 2, 4)sin
+    pe[:, 0::2] = torch.sin(position * div_term)
+    # 奇數(1, 3, 5)cos
+    pe[:, 1::2] = torch.cos(position * div_term)
+    
+    return pe
+
+L, D = 100, 128
+pe_matrix = get_sinusoidal_embeddings(L, D)
+
+
+def visualize_pe_similarity(pe):
+    # 計算點積矩陣 (L, D) @ (D, L) -> (L, L)
+    similarity = torch.matmul(pe, pe.transpose(0, 1))
+    
+    plt.figure(figsize=(8, 6))
+    plt.imshow(similarity.numpy(), cmap='viridis')
+    plt.colorbar()
+    plt.title("Position Embedding Dot Product Similarity")
+    plt.xlabel("Position")
+    plt.ylabel("Position")
+    plt.savefig("position_embedding_similarity.png")
+    plt.show()
+
+visualize_pe_similarity(pe_matrix)`, 
+        showCode: false 
+    },
+                { title: "Feed Forward Network", content: `• 1.實作 Transformer 裡的 position-wise feed forward network
+• 2.說明 Transformer 每個 token 經過 attention 後，還會各自通過一個小型 MLP 做特徵轉換。`,  
+    code: `import torch
+import torch.nn as nn
+
+class PositionWiseFeedForward(nn.Module):
+    def __init__(self, d_model, d_ff, dropout=0.1):
+        super(PositionWiseFeedForward, self).__init__()
+
+        self.w_1 = nn.Linear(d_model, d_ff)
+
+        self.w_2 = nn.Linear(d_ff, d_model)
+
+        self.activation = nn.ReLU() 
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        
+        x = self.activation(self.w_1(x))
+        
+        x = self.dropout(x)
+        
+        x = self.w_2(x)
+        
+        return x
+    
+batch_size = 2
+seq_len = 100
+d_model = 128
+d_ff = 512 
+
+ffn = PositionWiseFeedForward(d_model, d_ff)
+
+input_tensor = torch.randn(batch_size, seq_len, d_model)
+
+output_tensor = ffn(input_tensor)
+
+print(f"輸入維度: {input_tensor.shape}")
+print(f"輸出維度: {output_tensor.shape}")
+print(f"維度是否一致: {input_tensor.shape == output_tensor.shape}")`, 
+        showCode: false 
+    },
+                { title: "Causal Mask", content: `• 1.實作 GPT 不能看未來 token 的下三角遮罩
+• 2.說明 GPT 只能看過去，不能看未來。`,  
+    code: `import torch
+import torch.nn.functional as F
+import math
+
+B, L, D = 1, 4, 8  
+d_k = D
+
+q = torch.randn(B, L, D)
+k = torch.randn(B, L, D)
+
+scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(d_k)
+
+mask = torch.tril(torch.ones(L, L)) 
+
+mask = mask.masked_fill(mask == 0, float('-inf')).masked_fill(mask == 1, 0.0)
+
+masked_scores = scores + mask
+attn_weights = F.softmax(masked_scores, dim=-1)
+
+print("--- Mask 矩陣 ---")
+print(mask)
+print("\n--- Attention Weights (Softmax 後) ---")
+print(attn_weights[0]) `, 
+        showCode: false , showCode: false },
+                { title: "	Transformer Block", content: `• 1.手刻一個簡化版 GPT Transformer block
+• 2.說明 GPT 的基本 Transformer block 長什麼樣子。`,  
+    code: `import torch
+import torch.nn as nn
+import math
+
+class PureTransformerBlock(nn.Module):
+    def __init__(self, d_model, n_heads, d_ff):
+        super().__init__()
+        self.h = n_heads
+        self.d_k = d_model // n_heads
+
+        self.w_q = nn.Linear(d_model, d_model)
+        self.w_k = nn.Linear(d_model, d_model)
+        self.w_v = nn.Linear(d_model, d_model)
+        self.w_out = nn.Linear(d_model, d_model)
+        
+        #FFN 
+        self.ffn = nn.Sequential(
+            nn.Linear(d_model, d_ff),
+            nn.ReLU(),
+            nn.Linear(d_ff, d_model)
+        )
+        
+        # LayerNorm
+        self.ln1 = nn.LayerNorm(d_model)
+        self.ln2 = nn.LayerNorm(d_model)
+
+    def forward(self, x):
+        B, L, D = x.shape
+        
+        residual = x
+        x = self.ln1(x) 
+        
+        q = self.w_q(x).view(B, L, self.h, self.d_k).transpose(1, 2)
+        k = self.w_k(x).view(B, L, self.h, self.d_k).transpose(1, 2)
+        v = self.w_v(x).view(B, L, self.h, self.d_k).transpose(1, 2)
+        
+        scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.d_k)
+        
+        mask = torch.tril(torch.ones(L, L, device=x.device)).view(1, 1, L, L)
+        scores = scores.masked_fill(mask == 0, float('-inf'))
+        
+        attn_weights = torch.softmax(scores, dim=-1)
+        
+        context = torch.matmul(attn_weights, v)
+        context = context.transpose(1, 2).contiguous().view(B, L, D)
+        
+        x = residual + self.w_out(context)
+        
+        residual = x
+        x = self.ln2(x) # Pre-Norm
+        x = residual + self.ffn(x) 
+        
+        return x
+
+model = PureTransformerBlock(d_model=128, n_heads=8, d_ff=512)
+x = torch.randn(2, 100, 128)
+output = model(x)
+print(f"最終輸出形狀: {output.shape} (預期為 [2, 100, 128])")
+`, 
+        showCode: false , showCode: false },
+                { title: "	KV Cache", content: `• 1.實作推論時可重用 Key/Value 的 attention block
+• 2.說明 GPT 推論時可以靠 KV Cache 避免重複計算。`,  
+    code: `import torch
+import torch.nn as nn
+import math
+
+class KVCacheTransformerBlock(nn.Module):
+    def __init__(self, d_model, n_heads, d_ff):
+        super().__init__()
+        self.h = n_heads # 頭數
+        self.d_k = d_model // n_heads # 每頭的維度
+        self.w_q = nn.Linear(d_model, d_model)
+        self.w_k = nn.Linear(d_model, d_model)
+        self.w_v = nn.Linear(d_model, d_model)
+        self.w_out = nn.Linear(d_model, d_model)
+        self.ln1 = nn.LayerNorm(d_model)    # LayerNorm 1
+
+    def forward(self, x, past_kv=None):
+        B, L_new, D = x.shape 
+        x_norm = self.ln1(x)
+        
+        # (B, H, L_new, d_k)
+        q = self.w_q(x_norm).view(B, L_new, self.h, self.d_k).transpose(1, 2)
+        k = self.w_k(x_norm).view(B, L_new, self.h, self.d_k).transpose(1, 2)
+        v = self.w_v(x_norm).view(B, L_new, self.h, self.d_k).transpose(1, 2)
+
+        if past_kv is not None:
+            k_old, v_old = past_kv
+            k = torch.cat([k_old, k], dim=2) # 將新的 K 拼接在舊的 K 後面
+            v = torch.cat([v_old, v], dim=2) # 將新的 V 拼接在舊的 V 後面
+        
+        present_kv = (k, v)
+        scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(self.d_k)
+        attn = torch.softmax(scores, dim=-1) # (B, H, L_new, L_total)
+        
+        out = torch.matmul(attn, v)
+        out = out.transpose(1, 2).contiguous().view(B, L_new, D)
+        return self.w_out(out), present_kv
+
+
+def greedy_decode_demo():
+    B, D, H = 1, 128, 8
+    block = KVCacheTransformerBlock(D, H, 512)
+    block.eval()
+
+    tokens = torch.randn(B, 3, D) # 模擬前面已經生成了 3 個 token 的輸入
+    
+    out_full, _ = block(tokens)
+    next_token_gen_a = out_full[:, -1:, :] 
+
+    _, cache = block(tokens[:, :2, :]) 
+    out_cache, cache_final = block(tokens[:, 2:3, :], past_kv=cache) # 使用前兩個 token 的 K/V 作為 cache，生成下一個 token 的輸出
+    next_token_gen_b = out_cache 
+
+    diff = torch.abs(next_token_gen_a - next_token_gen_b).max().item()
+    print(f"誤差: {diff:.8e}")
+    print(f"Cache K 維度: {cache_final[0].shape}")
+
+if __name__ == "__main__":
+    greedy_decode_demo()`, 
+        showCode: false , showCode: false },
+
+        { 
+        title: "	KV Cache Benchmark", 
+        content: `• 1.比較 full recalculation 和 KV cache 的速度差異
+• 2.沒有 KV Cache 時，生成越長越慢；有 KV Cache 時，每步推論成本更穩定。`,  
+    code: `import torch
+import time
+import matplotlib.pyplot as plt
+from lab5 import KVCacheTransformerBlock 
+
+def run_performance_test(max_len=512):
+    D, H = 128, 8
+    block = KVCacheTransformerBlock(D, H, 512).eval()
+    
+    full_times = []
+    cache_times = []
+    
+    x_full = torch.randn(1, 1, D) 
+    
+    print("全量重算")
+    for i in range(1, max_len + 1): 
+        input_seq = torch.randn(1, i, D)
+        start = time.time()
+        _ = block(input_seq)
+        full_times.append(time.time() - start)
+
+    print("KV Cache")
+    past_kv = None 
+    for i in range(1, max_len + 1):
+        single_token = torch.randn(1, 1, D) 
+        start = time.time()
+        _, past_kv = block(single_token, past_kv=past_kv) 
+        cache_times.append(time.time() - start)
+
+    return full_times, cache_times
+
+
+full, cache = run_performance_test(512)
+
+plt.figure(figsize=(10, 6))
+plt.plot(full, label='Full Recalculation (Quadratic)', color='red')
+plt.plot(cache, label='KV Cache (Linear)', color='blue')
+plt.xlabel('Sequence Length')
+plt.ylabel('Time per Token (s)')
+plt.title('Inference Speed: Full vs KV Cache')
+plt.legend()
+plt.grid(True)
+plt.savefig('lab6.png') `, 
+        showCode: false 
+    },
+
+        
+            ]);
+
+            const toggleCode = (index) => {
+                experiments.value[index].showCode = !experiments.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labTitle, labDescription, experiments, scrollPercent, githubUrl, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

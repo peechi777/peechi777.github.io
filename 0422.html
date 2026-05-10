@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實驗紀錄 | Distributed_260422</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+            body { 
+                
+                font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+                background-color: #000000;
+                color: #94a3b8; 
+                line-height: 1.7;
+            }
+            h1, h2, h3 { 
+                
+                font-family: 'Noto Serif TC', serif; 
+                font-weight: 900;
+            }
+            .mono { font-family: 'JetBrains Mono', monospace; }
+       
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all 0.5s ease;
+        }
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        
+        .expand-enter-active, .expand-leave-active {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+        .expand-enter-from, .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: 0.85rem !important;
+            background: #373737 !important;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <h1 class="text-4xl font-black text-blue-800 mb-6 tracking-tight">{{ labTitle }}</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose whitespace-pre-line">
+                    {{ labDescription }}
+                </p>
+            </div>
+        </header>
+
+        <div class="space-y-40">
+<section v-for="(item, index) in experiments" :key="index" class="lab-card pl-10">
+    <div class="max-w-3xl"> <div class="mb-6">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+            <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+        </div>
+        
+        <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">
+            {{ item.content }}
+        </p>
+
+        <div class="relative">
+            <button 
+                @click="toggleCode(index)"
+                class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+            >
+                <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                {{ item.showCode ? 'Close Code' : 'View Code' }}
+                <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            <transition name="expand" @after-enter="refreshPrism">
+                <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                    <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                        <div class="flex gap-1.5">
+                            <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                            <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                        </div>
+                    </div>
+                    <pre class="language-cpp"><code>{{ item.code }}</code></pre>
+                </div>
+            </transition>
+        </div>
+    </div>
+</section>
+        </div>
+        
+        <div class="mt-40 flex justify-center">
+            <a :href="githubUrl" target="_blank" 
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                
+                <!-- GitHub Icon -->
+                <svg class="w-6 h-6 fill-current z-10" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.372.82 1.102.82 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">查看詳細</span>
+                
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span></span>
+        </footer>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const githubUrl = ref("https://github.com/peechi777/ai-rookie/tree/main/0422_distributed"); 
+            const labTitle = ref("分散式訓練(Distributed Training Deep Dive)");
+            const labDescription = ref(`• 將大型模型或巨量資料拆分至多個運算節點（如多張 GPU）並行處理的技術，目的在克服單機硬體顯存與運算力的限制，透過資料並行（Data Parallelism）或模型並行（Model Parallelism）架構，在維持模型精度的同時，顯著提升模型訓練與迭代的速度。\n
+            • 本專案將透過一系列 Python 實作練習，深入理解分散式訓練的核心概念與技術細節，包括 All-Gather、Reduce-Scatter、All-Reduce 等通訊原語，以及 Data Parallel、Distributed Data Parallel (DDP)、Fully Sharded Data Parallel (FSDP)、Tensor Parallel (TP) 等架構的運作機制與效能優化策略。`);
+
+            const experiments = ref([
+                { 
+        title: "Python 實作 all_gather", 
+        content: `• 把所有人各自的那份資料「串接」成一份完整清單，每個人都保存一份副本。`,  
+    code: `def all_gather_py(rank_data):
+    result = []
+    for sub_list in rank_data:
+        for item in sub_list:
+            result.append(item)
+    return result
+
+if __name__ == "__main__":
+    rank_data = [[1],[2],[3],[4]]
+    final_result = all_gather_py(rank_data)
+    print(rank_data)
+    print(final_result)`, 
+        showCode: false 
+    },
+                { title: "Python 實作 reduce_scatter", content: `• 1.逐元素加總 [1+2+3+4, …] = [10,10,10,10]
+• 2. 切開每人只拿 index == rank 那格`,  
+    code: `def reduce_scatter_sum_py(rank_data):
+    
+    world_size = len(rank_data)    
+    data_len = len(rank_data[0])   
+    
+    sum_result = [0] * data_len
+    for sub_list in rank_data:
+        for i in range(data_len):
+            sum_result[i] += sub_list[i]
+            
+    final_outputs = []
+    for rank in range(world_size):
+        final_outputs.append([sum_result[rank]])
+    return final_outputs
+
+if __name__ == "__main__":
+    rank_data = [
+        [1, 1, 1, 1],
+        [2, 2, 2, 2],
+        [3, 3, 3, 3],
+        [4, 4, 4, 4]
+    ]
+    result = reduce_scatter_sum_py(rank_data)
+    for i,res in enumerate(result):
+        print(f"rank {i}: {res}")`, 
+        showCode: false 
+    },
+                { title: " Python實作 all_reduce", content: `• reduce-scatter + all-gather = all-reduce`,  
+    code: `from all_gather import all_gather_py
+from reduce_scatter_sum import reduce_scatter_sum_py
+
+def all_reduce_via_two_steps(rank_data):
+    partial_gather = reduce_scatter_sum_py(rank_data)
+    final_result = all_gather_py(partial_gather)
+    return final_result
+
+if __name__ == "__main__":
+    rank_data = [
+        [1, 1, 1, 1],
+        [2, 2, 2, 2],
+        [3, 3, 3, 3],
+        [4, 4, 4, 4]
+    ]
+    result = all_reduce_via_two_steps(rank_data)
+    
+    print(rank_data)
+    for i in range(len(rank_data)):
+        print(f"rank {i}: {result}")`, 
+        showCode: false , showCode: false },
+                { title: "Data Parallel (DP) 的集中式梯度聚合", content: `• 在 DP 架構中，主節點（Master Node, GPU 0）承擔極大的通訊與運算負載。本練習模擬主節點在 Backward Pass 結束後，收集各 Worker 的梯度，計算全域平均
+值，並執行權重更新。
+• 這個過程展示了 DP 中的「集中式梯度聚合」，以及主節點在整個訓練迴圈中的核心角色。`,  
+    code: `import torch
+
+main_weight = torch.tensor([10.0]) 
+learning_rate = 0.1
+
+worker_gradients = [
+    torch.tensor([2.0]),
+    torch.tensor([4.0]),
+    torch.tensor([6.0]),
+    torch.tensor([8.0])
+]
+
+avg_grad = sum(worker_gradients) / len(worker_gradients)
+
+main_weight = main_weight - (learning_rate * avg_grad)
+
+print(f"[主節點] 更新完成 權重: {main_weight.item()}")
+`, 
+        showCode: false , showCode: false },
+                { title: "Distributed Data Parallel (DDP) 去中心化同步", content: `• DDP 屏除主節點設計，採去中心化架構。本練習模擬兩個 Process 透過 All-Reduce 同步局部梯度，確保各節點獨立更新後模型參數仍保持一致。`,  
+    code: `import os, torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+
+def ddp_sync_simulation(rank, world_size):
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    dist.init_process_group(
+        "gloo",
+        rank=rank,
+        world_size=world_size
+    )
+    my_weight = torch.tensor([10.0])
+    my_gradient = torch.tensor([2.0 if rank == 0 else 8.0])  
+    lerning_rate = 0.1
+    
+    dist.all_reduce(my_gradient, op=dist.ReduceOp.SUM)  
+    
+    my_gradient = my_gradient / world_size
+    
+    my_weight = my_weight - (lerning_rate * my_gradient)
+    print(f"[節點{rank}] 權重: {my_weight.item()}")
+    dist.destroy_process_group()
+    
+if __name__ == "__main__":
+    world_size = 2
+    mp.spawn(ddp_sync_simulation, args=(world_size,), nprocs=world_size, join=True)`, 
+        showCode: false , showCode: false },
+
+        { 
+        title: "FSDP 記憶體動態管理", 
+        content: `• FSDP 將模型參數切片（Sharding）突破單一設備記憶體瓶頸。本練習驗證：靜態時僅保留切片；Forward Pass 前動態 All-Gather 收集完整參數；運算後立即釋放，
+避免 OOM。`,  
+    code: `import os, torch
+import torch.distributed as dist
+import torch.multiprocessing as mp
+
+def fsdp_memory_mgmt(rank,ws):
+    os.environ['MASTER_ADDR'] = 'localhost'
+    os.environ['MASTER_PORT'] = '12355'
+    dist.init_process_group(
+        "gloo",
+        rank=rank,
+        world_size=ws
+    )
+    my_shard = torch.tensor([float(rank + 1)])  
+    print(f"[節點{rank}] 靜態: {my_shard.tolist()}")
+    
+    full_list = [torch.tensor([0.0]) for _ in range(ws)]
+    
+    dist.all_gather(full_list, my_shard)  
+    
+    full_weight = torch.cat(full_list)  
+    print(f"[節點{rank}] [配置] 完整: {full_weight.tolist()}")
+    
+    print(f"[節點{rank}] [配置] 完成")
+    
+    del full_weight  
+    
+    try:
+        print(full_weight)
+    except NameError:
+        print(f"[節點{rank}] [回收] 已釋放")
+    dist.destroy_process_group()
+    
+if __name__ == "__main__":
+    mp.spawn(fsdp_memory_mgmt, args=(2,), nprocs=2, join=True)`, 
+        showCode: false 
+    },
+    { 
+        title: "矩陣乘法 — 列切分 (Column Partition) 驗證", 
+        content: `• TP 的核心是將矩陣乘法拆分到多個裝置。本題驗證列切分：將權重 A 按列切成兩份，各自與完整 X 相乘，最後用 All-Gather（torch.cat）拼接出完整結果。`,  
+    code: `import torch
+torch.manual_seed(42)
+X = torch.randn(4, 8)
+A = torch.randn(8, 6)
+Y_ref = X @ A
+
+A1, A2 = torch.split(A, 3, dim=1)
+
+Y1 = X @ A1
+Y2 = X @ A2
+
+Y_tp = torch.cat([Y1, Y2], dim=1)
+
+assert torch.allclose(Y_ref, Y_tp)
+print("√ 列切分驗證通過！")`, 
+        showCode: false 
+    },
+        { 
+        title: "矩陣乘法 — 行切分 (Row Partition) 驗證", 
+        content: `•行切分與列切分不同：權重 A 按行切、輸入 X 也必須按列切，各裝置算出「部分和」，需要 All-Reduce（加總）才能還原完整結果。
+ `,  
+    code: `import torch
+torch.manual_seed(42)
+X = torch.randn(4, 8)
+A = torch.randn(8, 6)
+Y_ref = X @ A
+
+A1, A2 = torch.split(A, 4, dim=0)
+
+X1, X2 = torch.split(X, 4, dim=1)
+
+Z1 = X1 @ A1
+Z2 = X2 @ A2
+
+Y_tp =  Z1 + Z2
+
+assert torch.allclose(Y_ref, Y_tp)
+print("√ 行切分驗證通過！")`, 
+        showCode: false 
+    },
+        { 
+        title: "Megatron-LM MLP 完整 TP 模擬", 
+        content: `•Megatron MLP：第一層 A 列切分 + GeLU + 第二層 B 行切分 + All-Reduce。驗證分散式結果與單卡計算完全一致，整個 MLP 只需 1 次 All-Reduce `,  
+    code: `import torch
+import torch.nn.functional as F
+torch.manual_seed(42)
+X = torch.randn(4, 8)
+A = torch.randn(8, 12)
+B = torch.randn(12, 6)
+Y_ref = F.relu(X @ A) @ B
+
+A1, A2 = torch.split(A, 6, dim=1)
+
+H1 = F.relu(X @ A1)
+H2 = F.relu(X @ A2)
+
+B1, B2 = torch.split(B, 6, dim=0)
+
+Z1 = H1 @ B1
+Z2 = H2 @ B2
+
+Y_tp = Z1 + Z2
+
+assert torch.allclose(Y_ref, Y_tp)
+print("√ Megatron MLP TP 驗證通過！")`, 
+        showCode: false 
+    },
+        { 
+        title: "Naïve Pipeline Parallelism 模擬", 
+        content: `•PP 將模型按層切分到不同裝置。本題模擬 4 層 MLP 分配到 4 個 Stage，驗證逐 Stage 前向傳遞的結果與單卡一致。
+ `,  
+    code: `import torch
+import torch.nn as nn
+torch.manual_seed(42)
+X = torch.randn(4, 8)
+target = torch.randn(4, 2)
+layers = [nn.Linear(8,6),nn.Linear(6,6),nn.Linear(6,4),nn.Linear(4,2)]
+Y_ref =  X
+for layer in layers:
+    Y_ref = torch.relu(layer(Y_ref))
+
+stage_0 = layers[0]
+stage_1 = layers[1]
+stage_2 = layers[2]
+stage_3 = layers[3]
+
+act_0 = torch.relu(stage_0(X))
+act_1 = torch.relu(stage_1(act_0))
+act_2 = torch.relu(stage_2(act_1))
+Y_tp = stage_3(act_2)
+
+assert torch.allclose(Y_ref, Y_tp)
+print("√ Pipeline 前向傳遞驗證通過！")
+print(f"Stage 0 參數數量: {sum(p.numel() for p in stage_0.parameters() if p.requires_grad)}")
+print(f"Stage 1 參數數量: {sum(p.numel() for p in stage_1.parameters())}")
+print(f"Stage 2 參數數量: {sum(p.numel() for p in stage_2.parameters())}")
+print(f"Stage 3 參數數量: {sum(p.numel() for p in stage_3.parameters())}")`, 
+        showCode: false 
+    },
+        { 
+        title: "GPipe Micro-batch Pipeline 模擬", 
+        content: `• GPipe 把 batch 切成多個 micro-batch，讓不同 Stage 交錯計算。本題模擬 micro-batch 切分與 loss 聚合。`,  
+    code: `import torch
+import torch.nn as nn
+torch.manual_seed(42)
+X = torch.randn(8, 6)
+target = torch.randn(8, 2)
+stage_1 = nn.Linear(6,4)
+stage_2 = nn.Linear(4,2)
+
+Y_ref =  stage_2(torch.relu(stage_1(X)))
+loss_ref = nn.MSELoss()(Y_ref, target)
+
+M = 4
+
+X_micros = torch.chunk(X, M, dim=0)
+T_micros = torch.chunk(target, M, dim=0)
+
+total_loss = torch.tensor(0.0)
+
+for i in range(M):
+    h = torch.relu(stage_1(X_micros[i]))
+    out = stage_2(h)
+    
+    micro_loss = nn.MSELoss()(out, T_micros[i])
+    total_loss += (micro_loss)/M    
+    
+print(f"Gpipe loss: {total_loss.item():.4f}")`, 
+        showCode: false 
+    },
+        
+            ]);
+
+            const toggleCode = (index) => {
+                experiments.value[index].showCode = !experiments.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labTitle, labDescription, experiments, scrollPercent, githubUrl, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+
+</body>
+</html>

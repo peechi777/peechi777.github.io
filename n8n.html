@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram 個人知識庫 | n8n RAG Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050506;
+            --ink: #f8fafc;
+            --muted: #94a3b8;
+            --line: rgba(226, 232, 240, .18);
+            --accent: #00b4d8;
+            --lime: #9ef01a;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(circle at 78% 8%, rgba(0, 180, 216, .18), transparent 32rem),
+                radial-gradient(circle at 0% 42%, rgba(158, 240, 26, .09), transparent 28rem),
+                var(--bg);
+            color: var(--muted);
+            font-family: "Inter", "Noto Sans TC", sans-serif;
+            line-height: 1.75;
+        }
+
+        h1, h2, h3 {
+            color: var(--ink);
+            font-family: "Noto Serif TC", serif;
+            font-weight: 900;
+            letter-spacing: 0;
+        }
+
+        .mono { font-family: "JetBrains Mono", monospace; }
+
+        .progress {
+            position: fixed;
+            inset: 0 auto auto 0;
+            z-index: 50;
+            width: 100%;
+            height: 3px;
+            background: rgba(248, 250, 252, .12);
+        }
+
+        .progress span {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--lime));
+        }
+
+        .rail-card {
+            border-left: 1px solid rgba(248, 250, 252, .9);
+            transition: border-color .4s ease, transform .4s ease;
+        }
+
+        .rail-card:hover {
+            border-left-color: var(--accent);
+            transform: translateX(2px);
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, .46);
+            border: 1px solid rgba(148, 163, 184, .2);
+            backdrop-filter: blur(18px);
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            border: 1px solid rgba(0, 180, 216, .35);
+            background: rgba(0, 180, 216, .08);
+            color: #bae6fd;
+            border-radius: 999px;
+            padding: .5rem .85rem;
+            font-size: .72rem;
+        }
+
+        .screen {
+            background: #0f172a;
+            border: 1px solid rgba(148, 163, 184, .2);
+            box-shadow: 0 24px 70px rgba(0, 180, 216, .12);
+        }
+
+        .node {
+            position: relative;
+            min-height: 100%;
+        }
+
+        .node::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: -1.6rem;
+            width: 1.6rem;
+            height: 1px;
+            background: rgba(0, 180, 216, .5);
+        }
+
+        .node:last-child::after { display: none; }
+
+        @media (max-width: 767px) {
+            .node::after {
+                top: auto;
+                right: auto;
+                left: 1.2rem;
+                bottom: -1.45rem;
+                width: 1px;
+                height: 1.45rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress"><span id="progressBar"></span></div>
+
+    <main class="max-w-6xl mx-auto px-6 md:px-10 py-24">
+        <header class="min-h-[84vh] flex flex-col justify-center">
+            <p class="mono text-[11px] text-cyan-300 font-bold tracking-[0.32em] uppercase mb-7">n8n automation / rag / telegram bot</p>
+            <h1 class="text-5xl md:text-7xl max-w-4xl leading-tight">
+                Telegram 個人知識庫
+            </h1>
+            <p class="mt-8 max-w-2xl border-l-2 border-slate-100 pl-6 text-slate-300 text-lg font-light">
+                一個可以讀取雲端文件、建立知識庫，並透過 Telegram 即時回答問題的 AI 助理系統。使用 n8n 串接 Google Drive、Pinecone、Gemini 與 Telegram，完成文件自動蒐集、向量化、RAG 檢索與自然語言回覆。
+            </p>
+            <div class="mt-10 flex flex-wrap gap-3">
+                <span class="chip mono"><i class="fa-solid fa-robot"></i> AI Agent</span>
+                <span class="chip mono"><i class="fa-solid fa-database"></i> RAG</span>
+                <span class="chip mono"><i class="fa-solid fa-diagram-project"></i> n8n Workflow</span>
+                <span class="chip mono"><i class="fa-brands fa-telegram"></i> Telegram Bot</span>
+            </div>
+        </header>
+
+        <section class="grid md:grid-cols-4 gap-4 mb-36">
+            <div class="glass rounded-2xl p-5">
+                <img src="google-drive.png" alt="Google Drive" class="h-10 w-10 object-contain mb-5">
+                <h3 class="text-lg mb-2">雲端文件來源</h3>
+                <p class="text-sm">從 Google Drive 搜尋並下載 PDF / 文件，作為知識庫資料來源。</p>
+            </div>
+            <div class="glass rounded-2xl p-5">
+                <img src="pinecone.webp" alt="Pinecone" class="h-10 w-10 object-contain mb-5">
+                <h3 class="text-lg mb-2">向量資料庫</h3>
+                <p class="text-sm">透過 Gemini Embeddings 產生向量，寫入 Pinecone Vector Store。</p>
+            </div>
+            <div class="glass rounded-2xl p-5">
+                <div class="h-10 w-10 rounded-full bg-cyan-400/15 text-cyan-200 grid place-items-center mb-5"><i class="fa-solid fa-brain"></i></div>
+                <h3 class="text-lg mb-2">RAG 智慧問答</h3>
+                <p class="text-sm">把使用者問題轉成檢索任務，找到相關片段後交給 Gemini 回答。</p>
+            </div>
+            <div class="glass rounded-2xl p-5">
+                <img src="telegram.png" alt="Telegram" class="h-10 w-10 object-contain mb-5">
+                <h3 class="text-lg mb-2">即時聊天介面</h3>
+                <p class="text-sm">Telegram Trigger 接收訊息，回覆整理後的自然語言答案或錯誤訊息。</p>
+            </div>
+        </section>
+
+        <section class="rail-card pl-8 md:pl-12 mb-40">
+            <p class="mono text-[11px] text-cyan-300 font-bold tracking-[0.24em] uppercase mb-3">System Flow</p>
+            <h2 class="text-3xl md:text-5xl mb-8">從文件到回答的完整鏈路</h2>
+            <p class="max-w-3xl mb-10">系統分成兩條路徑：一條負責定時同步雲端文件並更新向量庫，另一條處理 Telegram 提問、檢索知識庫並回傳答案。</p>
+
+            <div class="grid md:grid-cols-5 gap-6">
+                <div class="node glass rounded-2xl p-5">
+                    <p class="mono text-[10px] text-lime-300 mb-2">01 / SOURCE</p>
+                    <h3 class="text-lg mb-2">Google Drive</h3>
+                    <p class="text-sm">搜尋資料夾、下載文件，讓知識來源可持續更新。</p>
+                </div>
+                <div class="node glass rounded-2xl p-5">
+                    <p class="mono text-[10px] text-lime-300 mb-2">02 / CHUNK</p>
+                    <h3 class="text-lg mb-2">Text Splitter</h3>
+                    <p class="text-sm">Recursive Character Text Splitter 將文件切成可檢索片段。</p>
+                </div>
+                <div class="node glass rounded-2xl p-5">
+                    <p class="mono text-[10px] text-lime-300 mb-2">03 / EMBED</p>
+                    <h3 class="text-lg mb-2">Gemini Embedding</h3>
+                    <p class="text-sm">把文字轉成向量，建立語意搜尋基礎。</p>
+                </div>
+                <div class="node glass rounded-2xl p-5">
+                    <p class="mono text-[10px] text-lime-300 mb-2">04 / STORE</p>
+                    <h3 class="text-lg mb-2">Pinecone</h3>
+                    <p class="text-sm">儲存文件向量，供 AI Agent 作為工具檢索。</p>
+                </div>
+                <div class="node glass rounded-2xl p-5">
+                    <p class="mono text-[10px] text-lime-300 mb-2">05 / CHAT</p>
+                    <h3 class="text-lg mb-2">Telegram</h3>
+                    <p class="text-sm">使用者提問後，AI 生成答案並回傳到聊天室。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="rail-card pl-8 md:pl-12 mb-40">
+            <p class="mono text-[11px] text-cyan-300 font-bold tracking-[0.24em] uppercase mb-3">Workflow Screens</p>
+            <h2 class="text-3xl md:text-5xl mb-8">n8n 工作流拆解</h2>
+            <div class="space-y-10">
+                <figure class="screen rounded-2xl overflow-hidden">
+                    <img src="n8n-final.png" alt="完整 n8n workflow" class="w-full object-contain">
+                    <figcaption class="px-5 py-4 text-sm text-slate-400 border-t border-slate-700/70">完整工作流：文件同步、向量更新、Telegram 問答與錯誤回傳。</figcaption>
+                </figure>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <figure class="screen rounded-2xl overflow-hidden">
+                        <img src="n8n1.png" alt="n8n workflow screenshot 1" class="w-full h-56 object-cover object-top">
+                        <figcaption class="px-4 py-3 text-xs">定時或手動觸發後，搜尋並下載 Google Drive 文件。</figcaption>
+                    </figure>
+                    <figure class="screen rounded-2xl overflow-hidden">
+                        <img src="n8n2.png" alt="n8n workflow screenshot 2" class="w-full h-56 object-cover object-top">
+                        <figcaption class="px-4 py-3 text-xs">文件切割、Embedding，寫入 Pinecone 向量資料庫。</figcaption>
+                    </figure>
+                    <figure class="screen rounded-2xl overflow-hidden">
+                        <img src="n8n3.png" alt="n8n workflow screenshot 3" class="w-full h-56 object-cover object-top">
+                        <figcaption class="px-4 py-3 text-xs">Telegram 訊息觸發 AI Agent，產生回覆再送回聊天室。</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid lg:grid-cols-[.85fr_1.15fr] gap-10 mb-40 items-start">
+            <div class="rail-card pl-8 md:pl-12">
+                <p class="mono text-[11px] text-cyan-300 font-bold tracking-[0.24em] uppercase mb-3">Demo</p>
+                <h2 class="text-3xl md:text-5xl mb-8">實際問答展示</h2>
+                <p class="mb-6">簡報中的測試流程先詢問與雲端文件無關的問題，再切換到知識庫相關問題，驗證 AI Agent 是否能根據向量資料庫內容回答。</p>
+                <div class="space-y-4">
+                    <div class="glass rounded-2xl p-5">
+                        <p class="mono text-[10px] text-lime-300 mb-2">BEHAVIOR</p>
+                        <p class="text-sm">無關問題會顯示角色限制或回覆邊界，避免 AI 任意發散。</p>
+                    </div>
+                    <div class="glass rounded-2xl p-5">
+                        <p class="mono text-[10px] text-lime-300 mb-2">RAG ANSWER</p>
+                        <p class="text-sm">相關問題會先從 Pinecone 找資料，再由 Gemini 組成可讀答案。</p>
+                    </div>
+                    <div class="glass rounded-2xl p-5">
+                        <p class="mono text-[10px] text-lime-300 mb-2">ERROR PATH</p>
+                        <p class="text-sm">流程中若出現錯誤，會整理成訊息回傳 Telegram。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="screen rounded-2xl overflow-hidden">
+                <video controls preload="metadata" class="w-full" poster="n8n-final.png">
+                    <source src="demo.mp4" type="video/mp4">
+                    您的瀏覽器不支援影片播放。
+                </video>
+            </div>
+        </section>
+
+        <section class="rail-card pl-8 md:pl-12 mb-40">
+            <p class="mono text-[11px] text-cyan-300 font-bold tracking-[0.24em] uppercase mb-3">Implementation Notes</p>
+            <h2 class="text-3xl md:text-5xl mb-8">作品重點</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-xl mb-3">自動化資料更新</h3>
+                    <p class="text-sm">透過 n8n 把雲端文件更新流程模組化，減少手動匯入知識庫的成本。</p>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-xl mb-3">向量化與檢索</h3>
+                    <p class="text-sm">使用 Gemini Embeddings 與 Pinecone，讓 Telegram 問答能根據文件語意找到相關內容。</p>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-xl mb-3">低門檻聊天入口</h3>
+                    <p class="text-sm">使用者只需要在 Telegram 發訊息，不必進入後台或額外系統。</p>
+                </div>
+                <div class="glass rounded-2xl p-6">
+                    <h3 class="text-xl mb-3">可替換角色設定</h3>
+                    <p class="text-sm">AI Agent 的 system message 可依不同知識庫調整，例如金融助理、課程助理或內部文件助理。</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="border-t border-slate-100/20 pt-10 pb-8 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+            <div>
+                <p class="mono text-[10px] tracking-[0.3em] uppercase text-slate-500">Telegram Personal Knowledge Base</p>
+                <p class="text-sm mt-2">第九組 / 蔡泓其</p>
+            </div>
+            <a href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;" class="chip mono">Back to top <i class="fa-solid fa-arrow-up"></i></a>
+        </footer>
+    </main>
+
+    <script>
+        const bar = document.getElementById("progressBar");
+        window.addEventListener("scroll", () => {
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            bar.style.width = `${height ? (window.scrollY / height) * 100 : 0}%`;
+        });
+    </script>
+</body>
+</html>

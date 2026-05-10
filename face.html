@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Attendance System | Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Serif+TC:wght@600;900&family=Inter:wght@300;400;600;800&family=Noto+Sans+TC:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #060606; --accent: #2563eb; }
+
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #000;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Noto Serif TC', serif;
+            font-weight: 900;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        .lab-card {
+            border-left: 1px solid #f1f5f9;
+            transition: all .5s ease;
+        }
+
+        .lab-card:hover { border-left-color: var(--accent); }
+
+        .expand-enter-active,
+        .expand-leave-active {
+            transition: all .4s cubic-bezier(.4, 0, .2, 1);
+            max-height: 1000000px;
+            overflow: hidden;
+        }
+
+        .expand-enter-from,
+        .expand-leave-to {
+            max-height: 0;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        pre[class*="language-"] {
+            margin: 0 !important;
+            border-radius: 0 0 12px 12px !important;
+            font-size: .85rem !important;
+            background: #373737 !important;
+        }
+
+        .glass {
+            background: rgba(15, 23, 42, .38);
+            border: 1px solid rgba(148, 163, 184, .18);
+        }
+
+        .pill {
+            border: 1px solid rgba(37, 99, 235, .35);
+            color: #bfdbfe;
+            background: rgba(37, 99, 235, .08);
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <nav class="h-1 bg-slate-50 w-full sticky top-0 z-50">
+        <div class="h-full bg-blue-500 transition-all duration-150" :style="{ width: scrollPercent + '%' }"></div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto px-8 py-24">
+        <header class="mb-32">
+            <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.28em] uppercase mb-6">Computer Vision Portfolio</p>
+            <h1 class="text-4xl md:text-6xl font-black text-blue-800 mb-8 tracking-tight">Face Attendance System</h1>
+            <div class="max-w-2xl">
+                <p class="text-slate-400 font-light border-l-2 border-slate-200 pl-6 leading-loose">
+                    一套 Python 桌面出勤系統：使用 MediaPipe 偵測人臉、InsightFace 產生 512 維臉部特徵、FaceMesh 進行眨眼活體檢測，最後把員工資料與出勤紀錄寫入 SQLite。
+                </p>
+            </div>
+
+            <div class="mt-10 flex flex-wrap gap-3">
+                <span class="pill mono rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]">PySide6 GUI</span>
+                <span class="pill mono rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]">MediaPipe</span>
+                <span class="pill mono rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]">InsightFace</span>
+                <span class="pill mono rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]">SQLite</span>
+                <span class="pill mono rounded-full px-4 py-2 text-[10px] uppercase tracking-[0.18em]">OpenCV</span>
+            </div>
+        </header>
+
+        <section class="mb-40 grid md:grid-cols-3 gap-5">
+            <div class="glass rounded-xl p-6">
+                <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase mb-3">Mode 01</p>
+                <h2 class="text-xl text-blue-800 mb-3">註冊</h2>
+                <p class="text-sm">擷取單一人臉，抽取特徵向量，將員工 ID、姓名與 embedding 存入 SQLite。</p>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase mb-3">Mode 02</p>
+                <h2 class="text-xl text-blue-800 mb-3">打卡</h2>
+                <p class="text-sm">辨識員工身分後記錄上班、下班、休息等出勤狀態，並用冷卻時間避免重複打卡。</p>
+            </div>
+            <div class="glass rounded-xl p-6">
+                <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase mb-3">Mode 03</p>
+                <h2 class="text-xl text-blue-800 mb-3">查詢</h2>
+                <p class="text-sm">依日期範圍查詢出勤紀錄，顯示信心分數、時間戳記與打卡類型。</p>
+            </div>
+        </section>
+
+        <section class="space-y-40">
+            <section v-for="(item, index) in labs" :key="item.title" class="lab-card pl-10">
+                <div class="max-w-3xl">
+                    <div class="mb-6">
+                        <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">LAB 0{{ index + 1 }}</span>
+                        <h3 class="text-2xl font-bold text-blue-800 mt-2">{{ item.title }}</h3>
+                    </div>
+
+                    <p class="text-slate-400 mb-8 text-sm md:text-base whitespace-pre-line leading-relaxed">{{ item.content }}</p>
+
+                    <div class="grid md:grid-cols-2 gap-4 mb-8" v-if="item.points">
+                        <div v-for="point in item.points" :key="point.label" class="glass rounded-xl p-5">
+                            <p class="mono text-[10px] text-blue-500 font-bold tracking-[0.18em] uppercase mb-2">{{ point.label }}</p>
+                            <p class="text-sm">{{ point.text }}</p>
+                        </div>
+                    </div>
+
+                    <div class="relative">
+                        <button
+                            @click="toggleCode(index)"
+                            class="flex items-center gap-3 text-xs font-bold mono uppercase tracking-wider text-slate-400 hover:text-blue-500 transition-colors group"
+                        >
+                            <span class="w-8 h-[1px] bg-slate-200 group-hover:bg-blue-300 transition-all"></span>
+                            {{ item.showCode ? 'Close Code' : 'View Code' }}
+                            <svg class="w-3 h-3 transition-transform duration-300" :class="{ 'rotate-180': item.showCode }" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"></path></svg>
+                        </button>
+
+                        <transition name="expand" @after-enter="refreshPrism">
+                            <div v-if="item.showCode" class="mt-6 shadow-xl rounded-xl overflow-hidden border border-slate-800">
+                                <div class="bg-slate-800 px-4 py-2 flex items-center justify-between border-b border-slate-700">
+                                    <div class="flex gap-1.5">
+                                        <div class="w-2 h-2 rounded-full bg-red-500/50"></div>
+                                        <div class="w-2 h-2 rounded-full bg-amber-500/50"></div>
+                                        <div class="w-2 h-2 rounded-full bg-emerald-500/50"></div>
+                                    </div>
+                                    <span class="mono text-[10px] text-slate-500">{{ item.file }}</span>
+                                </div>
+                                <pre class="language-python"><code>{{ item.code }}</code></pre>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <section class="mt-40 lab-card pl-10">
+            <span class="mono text-[10px] text-blue-500 font-bold tracking-[0.2em] uppercase">Architecture</span>
+            <h2 class="text-2xl md:text-3xl font-bold text-blue-800 mt-2 mb-8">資料流與系統邏輯</h2>
+            <div class="space-y-4">
+                <div class="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-4">
+                    <span class="mono text-blue-400 text-xs w-28">Register</span>
+                    <p class="text-sm">Camera → MediaPipe face box → InsightFace embedding → SQLite employees</p>
+                </div>
+                <div class="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-4">
+                    <span class="mono text-blue-400 text-xs w-28">Attendance</span>
+                    <p class="text-sm">Camera → liveness blink check → cosine similarity → cooldown check → attendance_records</p>
+                </div>
+                <div class="glass rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-4">
+                    <span class="mono text-blue-400 text-xs w-28">Records</span>
+                    <p class="text-sm">Date range → SQLite query → PySide6 table → export / review</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="mt-40 flex justify-center">
+            <a href="https://github.com/peechi777/Face_Check-in/tree/v2-dev" target="_blank"
+               class="group relative inline-flex items-center gap-4 px-10 py-5 bg-transparent border border-slate-800 rounded-full text-slate-300 hover:text-white hover:border-blue-500 transition-all duration-500 overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.1)] hover:shadow-[0_0_30px_rgba(37,99,235,0.2)]">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span class="text-sm font-bold mono uppercase tracking-[0.2em] z-10">Open Project Folder</span>
+                <svg class="w-4 h-4 transform group-hover:translate-x-2 transition-transform duration-300 z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </a>
+        </div>
+
+        <footer class="mt-48 pb-12 border-t border-slate-100 pt-12 flex justify-between items-center text-[10px] mono text-slate-400 uppercase tracking-[0.3em]">
+            <span></span>
+            <span>Face Attendance System</span>
+        </footer>
+    </main>
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    createApp({
+        setup() {
+            const scrollPercent = ref(0);
+            const labs = ref([
+                {
+                    title: "MediaPipe 單人臉偵測",
+                    file: "src/core/detector.py",
+                    content: "系統先把 OpenCV 的 BGR 影像轉成 RGB，交給 MediaPipe FaceDetection。為了避免多人同框造成錯誤打卡，偵測結果必須剛好只有一張臉，才會回傳 bounding box。",
+                    points: [
+                        { label: "Input", text: "攝影機影像 frame，格式為 BGR ndarray。" },
+                        { label: "Output", text: "單一人臉座標 (x, y, w, h)，沒有或多張臉就回傳 None。" }
+                    ],
+                    code: `def detect(self, image: np.ndarray):
+    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    results = self.face_detection.process(image_rgb)
+
+    if not results.detections:
+        return None
+
+    if len(results.detections) != 1:
+        return None
+
+    detection = results.detections[0]
+    bboxC = detection.location_data.relative_bounding_box
+
+    h_img, w_img = image.shape[:2]
+    x = int(bboxC.xmin * w_img)
+    y = int(bboxC.ymin * h_img)
+    w = int(bboxC.width * w_img)
+    h = int(bboxC.height * h_img)
+
+    return (x, y, w, h)`,
+                    showCode: false
+                },
+                {
+                    title: "InsightFace 512 維特徵辨識",
+                    file: "src/core/recognizer.py",
+                    content: "人臉裁切後交給 InsightFace buffalo_l 模型抽取 embedding，並進行 L2 normalization。辨識時以 dot product 計算相似度，超過 threshold 才視為同一位員工。",
+                    points: [
+                        { label: "Model", text: "FaceAnalysis(name='buffalo_l'), CPUExecutionProvider。" },
+                        { label: "Threshold", text: "config.yaml 中 recognition_threshold 目前設定為 0.4。" }
+                    ],
+                    code: `def extract_feature(self, face_img: np.ndarray):
+    faces = self.app.get(face_img)
+
+    if len(faces) != 1:
+        return None
+
+    feature = faces[0].embedding
+    feature = feature / np.linalg.norm(feature)
+    return feature.astype(np.float32)
+
+def recognize(self, feature, employee_features):
+    best_match = None
+    best_score = 0.0
+
+    for emp_id, name, emp_feature in employee_features:
+        score = self.compare(feature, emp_feature)
+        if score > best_score:
+            best_score = score
+            best_match = (emp_id, name, score)
+
+    if best_score >= self.threshold:
+        return best_match
+
+    return None`,
+                    showCode: false
+                },
+                {
+                    title: "眨眼活體檢測",
+                    file: "src/core/liveness.py",
+                    content: "活體檢測使用 MediaPipe FaceMesh 取左右眼 landmark，計算 EAR 眼睛長寬比。當 EAR 低於門檻並連續達到指定 frame，就判定完成眨眼，短時間內保持 alive 狀態。",
+                    points: [
+                        { label: "EAR", text: "以兩段垂直眼距除以水平眼距，判斷眼睛開合。" },
+                        { label: "Timeout", text: "通過活體檢測後 5 秒內有效，避免每次都重新眨眼。" }
+                    ],
+                    code: `def _calculate_ear(self, landmarks, indices, w, h):
+    coords = []
+    for idx in indices:
+        lm = landmarks[idx]
+        coords.append((int(lm.x * w), int(lm.y * h)))
+
+    v1 = np.linalg.norm(np.array(coords[1]) - np.array(coords[5]))
+    v2 = np.linalg.norm(np.array(coords[2]) - np.array(coords[4]))
+    h_dist = np.linalg.norm(np.array(coords[0]) - np.array(coords[3]))
+
+    ear = (v1 + v2) / (2.0 * h_dist)
+    return ear`,
+                    showCode: false
+                },
+                {
+                    title: "SQLite 出勤紀錄與冷卻機制",
+                    file: "src/core/database.py",
+                    content: "資料庫有 employees 與 attendance_records 兩張表。員工特徵以 BLOB 儲存，出勤紀錄保留 employee_id、name、timestamp、confidence、type、duration 與照片。冷卻檢查用來避免短時間重複寫入。",
+                    points: [
+                        { label: "employees", text: "employee_id、name、feature、created_at。" },
+                        { label: "records", text: "timestamp、confidence、type、duration、photo。" }
+                    ],
+                    code: `def check_recent_attendance(self, employee_id: str, minutes: int = 5) -> bool:
+    conn = sqlite3.connect(self.db_path)
+    cursor = conn.cursor()
+
+    time_threshold = (datetime.now() - timedelta(minutes=minutes)).isoformat()
+
+    cursor.execute('''
+        SELECT COUNT(*) FROM attendance_records
+        WHERE employee_id = ? AND timestamp > ?
+    ''', (employee_id, time_threshold))
+
+    count = cursor.fetchone()[0]
+    conn.close()
+
+    return count > 0`,
+                    showCode: false
+                }
+            ]);
+
+            const toggleCode = (index) => {
+                labs.value[index].showCode = !labs.value[index].showCode;
+            };
+
+            const refreshPrism = () => {
+                nextTick(() => Prism.highlightAll());
+            };
+
+            onMounted(() => {
+                window.addEventListener('scroll', () => {
+                    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                    scrollPercent.value = (winScroll / height) * 100;
+                });
+            });
+
+            return { labs, scrollPercent, toggleCode, refreshPrism };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>
